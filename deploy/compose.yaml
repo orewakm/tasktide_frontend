@@ -7,6 +7,8 @@
 # TR: VDS için tüm TaskTide yığını: önde Caddy, Next.js uygulaması, API, Postgres ve Redis.
 # TR: Dışarıdan sadece Caddy'ye erişilebilir (80 ve 443 portları).
 
+name: tasktide
+
 services:
     caddy:
         image: caddy:2-alpine
