@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.vscode
+.DS_Store
+npm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+Dockerfile
+.dockerignore
+deploy
+docs
+# Never bake local env files (like NEXT_PUBLIC_API_URL=http://localhost:8000) into the image.
+.env*
