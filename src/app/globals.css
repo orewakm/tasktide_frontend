@@ -1,26 +1,176 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * TaskTide design tokens: "Midnight Focus".
+ * Navy for structure, amber for anything you act on (buttons, running timers, focus).
+ * Corner radius rule: buttons, inputs and cards 8px (rounded-lg),
+ * columns, panels and dialogs 12px (rounded-xl), avatars and pills fully round.
+ * TR: Yapı için lacivert, üzerinde işlem yapılan her şey için kehribar (butonlar, çalışan zamanlayıcılar, odak).
+ */
+@theme inline {
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+
+    --color-canvas: var(--canvas);
+    --color-surface: var(--surface);
+    --color-sunken: var(--sunken);
+    --color-line: var(--line);
+    --color-line-strong: var(--line-strong);
+    --color-ink: var(--ink);
+    --color-muted: var(--muted);
+    --color-accent: var(--accent);
+    --color-accent-hover: var(--accent-hover);
+    --color-accent-ink: var(--accent-ink);
+    --color-on-accent: var(--on-accent);
+    --color-danger: var(--danger);
+    --color-on-danger: var(--on-danger);
+    --color-warn: var(--warn);
+    --color-online: var(--online);
+    --color-done: var(--done);
+    --color-progress: var(--progress);
+    --color-deep: var(--deep);
+    --color-on-deep: var(--on-deep);
+    --color-chart: var(--chart);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+    --canvas: #eef1f6;
+    --surface: #ffffff;
+    --sunken: #e4e9f1;
+    --line: #d5dce8;
+    --line-strong: #b8c2d4;
+    --ink: #0f1a33;
+    --muted: #56617c;
+    --accent: #f0a020;
+    --accent-hover: #e08f0c;
+    /* Amber dark enough to read as text on white. */
+    --accent-ink: #95560a;
+    --on-accent: #1d1404;
+    --danger: #c4321c;
+    --on-danger: #fff6f3;
+    --warn: #a86400;
+    --online: #16a34a;
+    /* Finished cards. Green reads as "done" at a glance. */
+    --done: #15803d;
+    /* Progress bars (share of cards done). Checked with the dataviz validator. */
+    --progress: #15803d;
+    --deep: #0f1a36;
+    --on-deep: #e9eef9;
+    /* Chart bars: amber that stays readable on white (checked with the dataviz validator). */
+    --chart: #c97a08;
+    --focus: #d17c00;
+    color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    :root {
+        --canvas: #090e1b;
+        --surface: #111a2e;
+        --sunken: #0c1425;
+        --line: #1e2a44;
+        --line-strong: #2d3b5b;
+        --ink: #e6ebf6;
+        --muted: #8f9bb6;
+        --accent: #ffb43c;
+        --accent-hover: #ffc463;
+        --accent-ink: #ffc35f;
+        --on-accent: #1d1404;
+        --danger: #ff7a5c;
+        --on-danger: #2b0906;
+        --warn: #f2b13f;
+        --online: #4ade80;
+        --done: #4ade80;
+        --progress: #26a85c;
+        --deep: #050913;
+        --on-deep: #e6ebf6;
+        --chart: #c4801a;
+        --focus: #ffb43c;
+        color-scheme: dark;
+    }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+ * Navy areas (the app header, the login side panel). Everything inside reuses the normal
+ * classes (bg-surface, text-muted...), which pick up these values instead.
+ * TR: Lacivert alanlar (uygulama header'ı, giriş yan paneli). İçerideki her şey normal
+ * TR: sınıfları (bg-surface, text-muted...) kullanır ve bu değerleri alır.
+ */
+.theme-deep {
+    --canvas: #0f1a36;
+    --surface: #1c2a52;
+    --sunken: #0a1430;
+    --line: rgb(255 255 255 / 0.1);
+    --line-strong: rgb(255 255 255 / 0.2);
+    --ink: #eef2fb;
+    --muted: #a6b2cd;
+    --accent-ink: #ffcd78;
+    --focus: #ffb43c;
+    color-scheme: dark;
+    --warn: #f2b13f;
+    --danger: #ff7a5c;
+    --done: #4ade80;
+    --online: #4ade80;
+}
+
+@media (prefers-color-scheme: dark) {
+    .theme-deep {
+        --canvas: #050913;
+        --surface: #131d34;
+        --sunken: #0b1222;
+        --line: rgb(255 255 255 / 0.08);
+    }
+}
+
+@layer base {
+    ::selection {
+        background: color-mix(in oklab, var(--accent) 22%, transparent);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+    }
+
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+/*
+ * Entrance animations for side panels, dialogs and menus.
+ * Used with motion-safe: so they are skipped for people who prefer less motion.
+ */
+@theme {
+    --animate-panel: slide-in-right 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-rise: rise-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    --animate-fade: fade-in 160ms ease-out;
+    --animate-enter: enter 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+
+    @keyframes slide-in-right {
+        from {
+            transform: translateX(24px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes enter {
+        from {
+            transform: translateY(16px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes rise-in {
+        from {
+            transform: translateY(6px) scale(0.98);
+            opacity: 0;
+        }
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+        }
+    }
 }
