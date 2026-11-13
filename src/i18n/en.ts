@@ -2,7 +2,7 @@ export const en = {
     common: {
         loading: 'Loading...',
         somethingWrong: 'Something went wrong',
-        networkError: "Can't reach the server. Check your connection.",
+        networkError: "Can't reach the server. Is the backend running?",
         cancel: 'Cancel',
         save: 'Save',
         saving: 'Saving...',

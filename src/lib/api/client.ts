@@ -91,7 +91,8 @@ export async function request<T>(method: Method, path: string, options: RequestO
             unauthorizedListeners.forEach((listener) => listener());
         }
         const err = data as ApiErrorBody | null;
-        throw new ApiError(res.status, err?.error ?? res.statusText, err?.details ?? []);
+        if (typeof err?.error !== 'string') throw new ApiError(NETWORK_ERROR, 'Server unreachable');
+        throw new ApiError(res.status, err.error, err.details ?? []);
     }
 
     return data as T;

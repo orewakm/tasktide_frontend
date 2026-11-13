@@ -4,7 +4,7 @@ export const tr: Dictionary = {
     common: {
         loading: 'Yükleniyor...',
         somethingWrong: 'Bir şeyler ters gitti',
-        networkError: 'Sunucuya ulaşılamıyor. Bağlantınızı kontrol edin.',
+        networkError: 'Sunucuya ulaşılamıyor. Backend çalışıyor mu?',
         cancel: 'Vazgeç',
         save: 'Kaydet',
         saving: 'Kaydediliyor...',
