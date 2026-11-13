@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type ReactNode } from 'react';
 
 interface DialogProps {
     open: boolean;
@@ -15,6 +15,7 @@ interface DialogProps {
 // TR: Tarayıcının dialog öğesiyle modal bir pencere gösterir.
 export function Dialog({ open, onClose, title, description, children, width = 'sm' }: DialogProps) {
     const ref = useRef<HTMLDialogElement>(null);
+    const titleId = useId();
 
     useEffect(() => {
         const dialog = ref.current;
@@ -26,6 +27,7 @@ export function Dialog({ open, onClose, title, description, children, width = 's
     return (
         <dialog
             ref={ref}
+            aria-labelledby={titleId}
             onClose={onClose}
             onClick={(event) => {
                 if (event.target === ref.current) onClose();
@@ -37,7 +39,9 @@ export function Dialog({ open, onClose, title, description, children, width = 's
             {open && (
                 <div className="flex flex-col gap-4 p-5">
                     <div className="flex flex-col gap-1.5">
-                        <h2 className="text-base font-semibold tracking-tight">{title}</h2>
+                        <h2 id={titleId} className="text-base font-semibold tracking-tight">
+                            {title}
+                        </h2>
                         {description && <div className="text-sm leading-relaxed text-muted">{description}</div>}
                     </div>
                     {children}

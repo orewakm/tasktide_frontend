@@ -11,8 +11,7 @@ export function LandingFooter() {
     return (
         <footer className="border-t border-line">
             <div
-                className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between 
-  sm:px-6"
+                className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6"
             >
                 <p className="flex items-center gap-3">
                     <Logo withText={false} />
