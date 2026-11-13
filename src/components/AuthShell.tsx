@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircleIcon } from '@phosphor-icons/react';
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { useLanguage } from '@/i18n/useLanguage';
 import { LanguageSwitch } from './LanguageSwitch';
@@ -22,7 +23,9 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
         <div className="grid min-h-[100dvh] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
             <main className="flex flex-col px-4 py-5 sm:px-10">
                 <div className="flex items-center justify-between">
-                    <Logo />
+                    <Link href="/" aria-label="TaskTide" className="rounded-lg">
+                        <Logo />
+                    </Link>
                     <LanguageSwitch />
                 </div>
 
