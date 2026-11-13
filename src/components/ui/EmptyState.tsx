@@ -7,6 +7,8 @@ interface EmptyStateProps {
     action?: ReactNode;
 }
 
+// Shows a message with an icon and an action when there is nothing to list.
+// TR: Listelenecek bir şey olmadığında simge ve eylemle bir mesaj gösterir.
 export function EmptyState({ icon, title, body, action }: EmptyStateProps) {
     return (
         <div className="flex flex-col items-start gap-4 rounded-xl border border-dashed border-line-strong px-6 py-10 sm:px-10">

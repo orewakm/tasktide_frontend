@@ -21,8 +21,6 @@ export interface Column {
     position: number;
 }
 
-// Someone who has the board open right now.
-// TR: Panoyu şu anda açık tutan biri.
 export interface OnlineUser {
     id: string;
     name: string;

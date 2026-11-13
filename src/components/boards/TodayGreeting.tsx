@@ -9,12 +9,11 @@ import { api } from '@/lib/api';
 import { formatDuration } from '@/lib/format';
 import { queryKeys } from '@/lib/queryKeys';
 
-// "Good evening, Elif" and how much time you tracked today, at the top of the boards page.
-// TR: Panolar sayfasının üstünde "İyi akşamlar, Elif" ve bugün ne kadar süre kaydettiğiniz.
+// Greets me and shows how much time I tracked today.
+// TR: Beni selamlar ve bugün ne kadar süre takip ettiğimi gösterir.
 export function TodayGreeting() {
     const { t } = useLanguage();
     const me = useCurrentUser();
-    // Read the clock once when the page opens.
     const [hour] = useState(() => new Date().getHours());
     const today = useQuery({ queryKey: queryKeys.myStats(1), queryFn: () => api.stats.mine(1) });
 

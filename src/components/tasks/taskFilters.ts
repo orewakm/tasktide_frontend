@@ -5,8 +5,6 @@ import type { CardQuery, CardSort, CardStatus, Priority } from '@/interfaces';
 
 export const PAGE_SIZE = 20;
 
-// Each sort option in the menu is one sort column plus a direction for the API.
-// TR: Menüdeki her sıralama seçeneği, API için bir sıralama kolonu artı bir yöndür.
 export const SORTS = {
     newest: { sort: 'created_at', order: 'desc' },
     oldest: { sort: 'created_at', order: 'asc' },
@@ -38,10 +36,6 @@ const DEFAULTS: TaskFilters = {
     page: 1,
 };
 
-// The name of each filter in the URL, e.g. /tasks?q=logo&status=pending&page=2
-// Default values are left out, so a plain /tasks means "my tasks, newest first".
-// TR: Her filtrenin URL'deki adı, örneğin /tasks?q=logo&status=pending&page=2
-// TR: Varsayılan değerler yazılmaz; düz /tasks "görevlerim, en yeni önce" demektir.
 const URL_NAMES: Record<keyof TaskFilters, string> = {
     search: 'q',
     board: 'board',
@@ -54,14 +48,14 @@ const URL_NAMES: Record<keyof TaskFilters, string> = {
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Returns the value if it is allowed, otherwise the fallback.
+// TR: Değer izinliyse onu, değilse varsayılanı döndürür.
 function oneOf<T extends string>(value: string | null, allowed: readonly T[], fallback: T): T {
     return allowed.includes(value as T) ? (value as T) : fallback;
 }
 
-// Reads the filters from the URL. Unknown or broken values fall back to the default,
-// so a hand-edited link shows a normal list instead of an error.
-// TR: Filtreleri URL'den okur. Bilinmeyen ya da bozuk değerler varsayılana döner;
-// TR: böylece elle değiştirilmiş bir bağlantı hata yerine normal bir liste gösterir.
+// Reads the filters from the URL, using defaults for broken values.
+// TR: Filtreleri URL'den okur, bozuk değerler için varsayılanları kullanır.
 function readFilters(params: { get(name: string): string | null }): TaskFilters {
     const board = params.get(URL_NAMES.board) ?? '';
     const page = Number(params.get(URL_NAMES.page));
@@ -77,18 +71,14 @@ function readFilters(params: { get(name: string): string | null }): TaskFilters 
     };
 }
 
-// The current filters. Re-renders whenever the URL changes.
-// TR: Geçerli filtreler. URL her değiştiğinde yeniden render eder.
+// Returns the current filters from the URL.
+// TR: URL'deki geçerli filtreleri döndürür.
 export function useTaskFilters(): TaskFilters {
     return readFilters(useSearchParams());
 }
 
-// Writes changes into the URL. Changing a filter goes back to page 1.
-// A filter change replaces the history entry, so typing a search doesn't fill up the Back button;
-// a page change adds one, so Back returns to the previous page.
-// TR: Değişiklikleri URL'ye yazar. Bir filtreyi değiştirmek 1. sayfaya döner.
-// TR: Filtre değişikliği geçmiş kaydının yerine geçer, böylece arama yazmak Geri butonunu doldurmaz;
-// TR: sayfa değişikliği yeni kayıt ekler, böylece Geri önceki sayfaya döner.
+// Writes filter changes to the URL and goes back to page 1.
+// TR: Filtre değişikliklerini URL'ye yazar ve 1. sayfaya döner.
 export function updateFilters(changes: Partial<TaskFilters>) {
     const next: TaskFilters = { ...readFilters(new URLSearchParams(window.location.search)), page: 1, ...changes };
     const params = new URLSearchParams();
@@ -102,18 +92,20 @@ export function updateFilters(changes: Partial<TaskFilters>) {
     else window.history.replaceState(null, '', url);
 }
 
-// Search, board, status and priority. The scope and sort are views, not filters,
-// so "Clear filters" keeps them.
-// TR: Arama, pano, durum ve öncelik. Kapsam ve sıralama filtre değil görünüm olduğu için
-// TR: "Filtreleri temizle" onları korur.
+// Returns true if a search, board, status or priority filter is set.
+// TR: Arama, pano, durum ya da öncelik filtresi varsa true döndürür.
 export function hasFilters(filters: TaskFilters): boolean {
     return Boolean(filters.search || filters.board || filters.status || filters.priority);
 }
 
+// Clears the search and the filters but keeps the scope and sort.
+// TR: Aramayı ve filtreleri temizler, kapsamı ve sıralamayı korur.
 export function clearFilters() {
     updateFilters({ search: '', board: '', status: '', priority: '' });
 }
 
+// Turns the filters into the query for the task list API.
+// TR: Filtreleri görev listesi API'sinin sorgusuna çevirir.
 export function toCardQuery(filters: TaskFilters): CardQuery {
     return {
         search: filters.search || undefined,

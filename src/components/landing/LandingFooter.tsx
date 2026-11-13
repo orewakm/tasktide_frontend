@@ -3,6 +3,8 @@
 import { Logo } from '@/components/Logo';
 import { useLanguage } from '@/i18n/useLanguage';
 
+// Shows the footer of the landing page.
+// TR: Tanıtım sayfasının alt bilgisini gösterir.
 export function LandingFooter() {
     const { t } = useLanguage();
 

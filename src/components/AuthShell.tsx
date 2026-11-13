@@ -13,8 +13,8 @@ interface AuthShellProps {
     footer: ReactNode;
 }
 
-// Shared layout for login and register: the form on the left, the product pitch on the right.
-// TR: Giriş ve kayıt için ortak düzen: solda form, sağda ürün tanıtımı.
+// Shows the login and sign-up layout with the form and the product pitch.
+// TR: Giriş ve kayıt düzenini form ve ürün tanıtımıyla gösterir.
 export function AuthShell({ title, subtitle, children, footer }: AuthShellProps) {
     const { t } = useLanguage();
 
@@ -37,7 +37,6 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
             </main>
 
             <aside className="theme-deep relative hidden overflow-hidden bg-canvas text-ink lg:flex">
-                {/* Two soft blue lights in opposite corners. */}
                 <div
                     aria-hidden
                     className="absolute inset-0 bg-[radial-gradient(70%_55%_at_100%_0%,rgb(99_132_255/0.30),transparent_70%),radial-gradient(60%_50%_at_0%_100%,rgb(76_110_220/0.18),transparent_65%)]"

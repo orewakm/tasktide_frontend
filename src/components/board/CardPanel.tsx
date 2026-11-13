@@ -26,8 +26,8 @@ interface CardPanelProps {
     onClose: () => void;
 }
 
-// The side panel with everything about one card.
-// TR: Bir kartla ilgili her şeyi gösteren yan panel.
+// Shows the side panel with everything about one card.
+// TR: Bir kartla ilgili her şeyi içeren yan paneli gösterir.
 export function CardPanel({ boardId, card, columnName, members, isOwner, onClose }: CardPanelProps) {
     const { t, language } = useLanguage();
     const queryClient = useQueryClient();
@@ -35,19 +35,14 @@ export function CardPanel({ boardId, card, columnName, members, isOwner, onClose
     const titleId = useId();
     const [confirmDelete, setConfirmDelete] = useState(false);
 
-    // Move focus into the panel once, when it opens.
     useEffect(() => {
         panelRef.current?.focus();
     }, []);
 
-    // Escape closes the panel. It listens on the whole page, so it still works after focus
-    // leaves the panel. Fields that use Escape themselves call preventDefault first, and a
-    // confirm dialog on top handles its own Escape.
-    // TR: Escape paneli kapatır. Tüm sayfayı dinler, böylece odak panelden çıktıktan sonra da
-    // TR: çalışır. Escape'i kendisi kullanan alanlar önce preventDefault çağırır; üstte açık
-    // TR: bir onay diyaloğu da kendi Escape'ini yönetir.
     const close = useEffectEvent(onClose);
     useEffect(() => {
+        // Closes the panel on Escape unless a dialog is open.
+        // TR: Açık bir pencere yoksa Escape ile paneli kapatır.
         function onKeyDown(event: KeyboardEvent) {
             if (event.key !== 'Escape' || event.defaultPrevented) return;
             if (document.querySelector('dialog[open]')) return;
@@ -57,33 +52,30 @@ export function CardPanel({ boardId, card, columnName, members, isOwner, onClose
         return () => document.removeEventListener('keydown', onKeyDown);
     }, []);
 
+    // Updates the board's cards in the cache.
+    // TR: Panonun kartlarını önbellekte günceller.
     const setCards = (update: (list: Card[] | undefined) => Card[] | undefined) =>
         queryClient.setQueryData<Card[]>(queryKeys.cards(boardId), update);
 
-    // Versions this panel created with its own saves. The server adds 1 per edit.
-    // TR: Bu panelin kendi kayıtlarıyla oluşturduğu versiyonlar. Sunucu her düzenlemede 1 ekler.
     const ownVersions = useRef(new Set<number>());
-    // Saves run one at a time, so a quick second change waits for the first.
-    // TR: Kayıtlar sırayla çalışır, böylece hızlı yapılan ikinci değişiklik ilkini bekler.
     const queue = useRef<Promise<unknown>>(Promise.resolve());
 
-    // True if someone else saved the card after `since`. Our own saves don't count.
-    // TR: `since`'ten sonra kartı başka biri kaydettiyse true. Kendi kayıtlarımız sayılmaz.
+    // Returns true if someone else saved the card since a version.
+    // TR: Kart bir sürümden beri başka biri tarafından kaydedildiyse true döndürür.
     const changedByOthers = (since: number, latest: number) => {
         for (let v = since + 1; v <= latest; v++) if (!ownVersions.current.has(v)) return true;
         return false;
     };
 
-    // Every edit sends the version it started from. 409 means someone else saved first:
-    // tell the user, reload the card, and let them redo the edit.
-    // TR: Her düzenleme başladığı versiyonu gönderir. 409, başka birinin önce kaydettiği anlamına gelir:
-    // TR: kullanıcıya söyle, kartı yeniden yükle ve düzenlemeyi tekrar yapmasına izin ver.
+    // Saves card fields with their version and handles conflicts.
+    // TR: Kart alanlarını sürümleriyle kaydeder ve çakışmaları yönetir.
     const save: SaveCard = (fields, version) => {
+        // Sends the save and reloads the card on a version conflict.
+        // TR: Kaydı gönderir ve sürüm çakışmasında kartı yeniden yükler.
         const run = async (): Promise<SaveResult> => {
             const latest =
                 queryClient.getQueryData<Card[]>(queryKeys.cards(boardId))?.find((c) => c.id === card.id)?.version ??
                 version;
-            // If only our own earlier saves came in between, build on top of them.
             const base = latest > version && !changedByOthers(version, latest) ? latest : version;
             try {
                 const updated = await api.cards.update(card.id, { version: base, ...fields });
@@ -97,7 +89,6 @@ export function CardPanel({ boardId, card, columnName, members, isOwner, onClose
                         const fresh = await api.cards.get(card.id);
                         setCards((list) => upsert(list, fresh));
                     } catch {
-                        // The live update will bring it.
                     }
                     return 'conflict';
                 }
@@ -110,6 +101,8 @@ export function CardPanel({ boardId, card, columnName, members, isOwner, onClose
         return result;
     };
 
+    // Deletes the card and closes the panel.
+    // TR: Kartı siler ve paneli kapatır.
     async function deleteCard() {
         try {
             await api.cards.remove(card.id);

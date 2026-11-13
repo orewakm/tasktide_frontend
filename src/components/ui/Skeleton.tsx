@@ -1,5 +1,5 @@
-// A placeholder block shaped like the content that is still loading.
-// TR: Hâlâ yüklenen içeriğin şeklinde bir yer tutucu blok.
+// Shows a grey placeholder block while content loads.
+// TR: İçerik yüklenirken gri bir yer tutucu blok gösterir.
 export function Skeleton({ className = '' }: { className?: string }) {
     return <div aria-hidden className={`rounded-lg bg-sunken motion-safe:animate-pulse ${className}`} />;
 }

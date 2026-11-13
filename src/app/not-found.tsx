@@ -5,6 +5,8 @@ import { Logo } from '@/components/Logo';
 import { buttonClass } from '@/components/ui/Button';
 import { useLanguage } from '@/i18n/useLanguage';
 
+// Shows the error page for an unknown URL.
+// TR: Bilinmeyen bir URL için hata sayfasını gösterir.
 export default function NotFound() {
     const { t } = useLanguage();
 

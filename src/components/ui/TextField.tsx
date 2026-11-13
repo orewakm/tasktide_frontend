@@ -2,7 +2,6 @@ import { useId, type InputHTMLAttributes } from 'react';
 
 interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
-    // Hide the label visually but keep it for screen readers.
     hideLabel?: boolean;
     hint?: string;
     error?: string;
@@ -11,6 +10,8 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
 export const inputClass =
     'w-full rounded-lg border bg-surface px-3 text-sm text-ink transition-[border-color,box-shadow] duration-150 placeholder:text-muted focus:border-accent focus:ring-3 focus:ring-accent/15 focus-visible:outline-none';
 
+// Shows a labelled text input with an optional hint and error.
+// TR: İsteğe bağlı ipucu ve hatayla etiketli bir metin alanı gösterir.
 export function TextField({ label, hideLabel, hint, error, className = '', ...inputProps }: TextFieldProps) {
     const id = useId();
     const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;

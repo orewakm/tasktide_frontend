@@ -4,6 +4,8 @@ import { useLanguage, type Language } from '@/i18n/useLanguage';
 
 const LANGUAGES: Language[] = ['en', 'tr'];
 
+// Shows the EN/TR switch and saves the chosen language.
+// TR: EN/TR seçicisini gösterir ve seçilen dili kaydeder.
 export function LanguageSwitch() {
     const { language, setLanguage, t } = useLanguage();
 

@@ -14,6 +14,8 @@ interface BoardTileProps {
     onDelete: () => void;
 }
 
+// Shows one board in the list with its menu for the owner.
+// TR: Listedeki bir panoyu, sahibi için menüsüyle gösterir.
 export function BoardTile({ board, isOwner, onRename, onDelete }: BoardTileProps) {
     const { t, language } = useLanguage();
 
@@ -21,8 +23,6 @@ export function BoardTile({ board, isOwner, onRename, onDelete }: BoardTileProps
         <article className="group relative flex min-h-32 flex-col justify-between gap-6 rounded-xl border border-line bg-surface p-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-line-strong hover:shadow-[0_12px_28px_-16px_rgb(0_0_0/0.25)]">
             <div className="flex items-start justify-between gap-3">
                 <h2 className="text-[15px] leading-snug font-semibold tracking-tight">
-                    {/* The ::after stretches the link over the whole tile, so the tile is clickable
-                        while the menu button stays a separate control. */}
                     <Link
                         href={`/boards/${board.id}`}
                         className="after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-accent"

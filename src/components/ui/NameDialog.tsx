@@ -15,12 +15,11 @@ interface NameDialogProps {
     submitLabel: string;
     initialName?: string;
     maxLength?: number;
-    // Throws to keep the dialog open and show the error.
     onSubmit: (name: string) => Promise<void>;
 }
 
-// A dialog with one name field. Used to create and rename boards and columns.
-// TR: Tek bir isim alanı olan diyalog. Pano ve sütun oluşturmak ve yeniden adlandırmak için kullanılır.
+// Shows a dialog with one name field, used to create and rename.
+// TR: Oluşturmak ve yeniden adlandırmak için tek isim alanlı bir pencere gösterir.
 export function NameDialog({ open, onClose, title, ...formProps }: NameDialogProps) {
     return (
         <Dialog open={open} onClose={onClose} title={title}>
@@ -29,7 +28,8 @@ export function NameDialog({ open, onClose, title, ...formProps }: NameDialogPro
     );
 }
 
-// A separate component so its state starts fresh every time the dialog opens.
+// Shows the name form, starting fresh each time the dialog opens.
+// TR: İsim formunu, pencere her açıldığında sıfırdan başlatarak gösterir.
 function NameForm({
     onClose,
     label,
@@ -43,6 +43,8 @@ function NameForm({
     const [error, setError] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
 
+    // Saves the name and closes the dialog.
+    // TR: İsmi kaydeder ve pencereyi kapatır.
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         const trimmed = name.trim();

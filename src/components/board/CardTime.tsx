@@ -19,6 +19,8 @@ import { queryKeys } from '@/lib/queryKeys';
 import { elapsedSeconds, useMyTimer, useTimerActions } from '@/lib/timer';
 import { useNow } from '@/lib/useNow';
 
+// Shows the card's timer button, total time and time entries.
+// TR: Kartın zamanlayıcı butonunu, toplam süresini ve zaman kayıtlarını gösterir.
 export function CardTime({ card, isOwner }: { card: Card; isOwner: boolean }) {
     const { t, language } = useLanguage();
     const me = useCurrentUser();
@@ -38,18 +40,21 @@ export function CardTime({ card, isOwner }: { card: Card; isOwner: boolean }) {
     const anyRunning = entries.data?.some((entry) => entry.ended_at === null) ?? false;
     const now = useNow(runningHere || anyRunning);
 
+    // Starts my timer on this card, or stops it.
+    // TR: Bu kartta zamanlayıcımı başlatır ya da durdurur.
     async function toggle() {
         setBusy(true);
         try {
             if (runningHere) await stop();
             else await start(card.id);
         } catch {
-            // The timer actions already showed the error.
         } finally {
             setBusy(false);
         }
     }
 
+    // Deletes a time entry.
+    // TR: Bir zaman kaydını siler.
     async function removeEntry(entry: TimeEntry) {
         try {
             await api.time.remove(entry.id);

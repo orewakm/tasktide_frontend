@@ -12,8 +12,8 @@ import { RankedList } from './RankedList';
 import { StatsSkeleton } from './StatsSkeleton';
 import { StatsEmpty, StatsHero, TopItem } from './StatsSummary';
 
-// The logged-in user's own time, across every board they're on.
-// TR: Giriş yapmış kullanıcının, üye olduğu tüm panolardaki kendi süresi.
+// Shows my own tracked time across all my boards.
+// TR: Tüm panolarımda takip ettiğim kendi süremi gösterir.
 export function MyStatsScreen() {
     const { t } = useLanguage();
     const [days, setDays] = useState(30);
@@ -21,7 +21,6 @@ export function MyStatsScreen() {
     const stats = useQuery({
         queryKey: queryKeys.myStats(days),
         queryFn: () => api.stats.mine(days),
-        // When the range changes, keep showing the old numbers (faded) until the new ones arrive.
         placeholderData: keepPreviousData,
     });
 

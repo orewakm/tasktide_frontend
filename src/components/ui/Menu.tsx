@@ -18,17 +18,23 @@ interface MenuProps {
     size?: 'sm' | 'md';
 }
 
-// A small "..." dropdown. Closes on outside click, Escape, or picking an item.
-// TR: Küçük bir "..." açılır menüsü. Dışarı tıklayınca, Escape'e basınca veya bir seçim yapınca kapanır.
+// Shows a small dropdown menu of actions.
+// TR: Küçük bir eylem açılır menüsü gösterir.
 export function Menu({ label, items, align = 'end', size = 'sm' }: MenuProps) {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!open) return;
+
+        // Closes the menu when the user clicks outside it.
+        // TR: Kullanıcı menünün dışına tıklayınca menüyü kapatır.
         function onPointerDown(event: PointerEvent) {
             if (!ref.current?.contains(event.target as Node)) setOpen(false);
         }
+
+        // Closes the menu when Escape is pressed.
+        // TR: Escape tuşuna basılınca menüyü kapatır.
         function onKeyDown(event: KeyboardEvent) {
             if (event.key === 'Escape') setOpen(false);
         }
@@ -49,7 +55,6 @@ export function Menu({ label, items, align = 'end', size = 'sm' }: MenuProps) {
                 size={size}
                 aria-haspopup="menu"
                 aria-expanded={open}
-                // Keep a drag from starting when this sits inside a draggable card or column.
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={(event) => {
                     event.stopPropagation();

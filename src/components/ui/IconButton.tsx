@@ -1,11 +1,12 @@
 import type { ButtonHTMLAttributes } from 'react';
 
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    // Read out by screen readers and shown as a tooltip, since the button has no text.
     label: string;
     size?: 'sm' | 'md';
 }
 
+// Shows a button with only an icon and an accessible label.
+// TR: Sadece simgeden oluşan, erişilebilir etiketli bir buton gösterir.
 export function IconButton({ label, size = 'md', className = '', type = 'button', ...props }: IconButtonProps) {
     return (
         <button

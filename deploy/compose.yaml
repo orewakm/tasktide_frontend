@@ -1,11 +1,5 @@
-# The whole TaskTide stack for the VDS: Caddy in front, the Next.js app, the API,
-# Postgres and Redis. Expects both repos cloned side by side:
-#   ~/tasktide/tasktide_frontend   (this repo)
-#   ~/tasktide/tasktide_backend
-# Run from this folder: docker compose up -d --build
-# Only Caddy is reachable from outside (ports 80 and 443).
-# TR: VDS için tüm TaskTide yığını: önde Caddy, Next.js uygulaması, API, Postgres ve Redis.
-# TR: Dışarıdan sadece Caddy'ye erişilebilir (80 ve 443 portları).
+# Production stack for the VDS (Caddy, web, API, Postgres, Redis); needs tasktide_backend next to this repo.
+# TR: VDS için canlı yığın (Caddy, web, API, Postgres, Redis); tasktide_backend bu reponun yanında olmalı.
 
 name: tasktide
 
@@ -41,7 +35,6 @@ services:
             DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in deploy/.env}
             DB_NAME: ${DB_NAME:-tasktide}
             REDIS_URL: redis://redis:6379
-            # Same origin as the frontend, because Caddy serves both.
             CORS_ORIGIN: https://${DOMAIN}
             SUPER_ADMIN_EMAIL: ${SUPER_ADMIN_EMAIL:?set SUPER_ADMIN_EMAIL in deploy/.env}
             SUPER_ADMIN_PASSWORD: ${SUPER_ADMIN_PASSWORD:?set SUPER_ADMIN_PASSWORD in deploy/.env}

@@ -9,8 +9,8 @@ interface RangePickerProps {
     onChange: (days: number) => void;
 }
 
-// The "7 / 30 / 90 days" switch above the stats.
-// TR: İstatistiklerin üstündeki "7 / 30 / 90 gün" seçici.
+// Shows the 7, 30 and 90 days switch.
+// TR: 7, 30 ve 90 gün seçicisini gösterir.
 export function RangePicker({ value, onChange }: RangePickerProps) {
     const { t } = useLanguage();
 

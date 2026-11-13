@@ -14,8 +14,8 @@ interface CardFaceProps {
     timerRunning: boolean;
 }
 
-// What a card looks like. Shared by the card in the list and the copy that follows the pointer.
-// TR: Bir kartın görünümü. Listedeki kart ve imleci takip eden kopya tarafından ortak kullanılır.
+// Shows a card's title, priority, status and assignee.
+// TR: Bir kartın başlığını, önceliğini, durumunu ve atanan kişisini gösterir.
 export function CardFace({ card, assignee, timerRunning }: CardFaceProps) {
     const { t } = useLanguage();
     const done = card.completed_at !== null;
@@ -50,6 +50,8 @@ interface CardTileProps extends CardFaceProps {
     onOpen: () => void;
 }
 
+// Shows a card in its column that can be dragged or opened.
+// TR: Sütunundaki bir kartı sürüklenebilir ve açılabilir şekilde gösterir.
 export function CardTile({ card, assignee, timerRunning, onOpen }: CardTileProps) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
         id: card.id,
@@ -62,7 +64,6 @@ export function CardTile({ card, assignee, timerRunning, onOpen }: CardTileProps
             style={{ transform: CSS.Translate.toString(transform), transition }}
             {...attributes}
             {...listeners}
-            // Enter opens the card; Space picks it up for keyboard dragging.
             onKeyDown={(event) => {
                 if (event.key === 'Enter') {
                     event.preventDefault();
@@ -81,7 +82,8 @@ export function CardTile({ card, assignee, timerRunning, onOpen }: CardTileProps
     );
 }
 
-// The floating copy shown under the pointer while dragging.
+// Shows the copy of a card that follows the pointer while dragging.
+// TR: Sürüklerken imleci takip eden kart kopyasını gösterir.
 export function CardDragPreview(props: CardFaceProps) {
     return (
         <div className={`${tileClass} rotate-[1.5deg] border-line cursor-grabbing shadow-[0_16px_32px_-12px_rgb(0_0_0/0.35)]`}>

@@ -7,15 +7,14 @@ import { buttonClass } from '@/components/ui/Button';
 import { useLanguage } from '@/i18n/useLanguage';
 import { BoardPreview } from './BoardPreview';
 
-// The first screen: what TaskTide does, the main buttons, and a small board that looks alive.
-// TR: İlk ekran: TaskTide ne yapar, ana butonlar ve canlı görünen küçük bir pano.
+// Shows the landing page headline, buttons and board preview.
+// TR: Tanıtım sayfasının başlığını, butonlarını ve pano önizlemesini gösterir.
 export function Hero() {
     const { t } = useLanguage();
     const { user } = useAuth();
 
     return (
         <section className="theme-deep relative overflow-hidden border-b border-line bg-canvas text-ink">
-            {/* Two soft blue lights, the same as on the login page. */}
             <div
                 aria-hidden
                 className="absolute inset-0 bg-[radial-gradient(70%_55%_at_100%_0%,rgb(99_132_255/0.30),transparent_70%),radial-gradient(60%_50%_at_0%_100%,rgb(76_110_220/0.18),transparent_65%)]"
@@ -42,7 +41,6 @@ export function Hero() {
                         {t.landing.hero.body}
                     </p>
 
-                    {/* Until the login check is done, show the buttons for new visitors: most people here are new. */}
                     <div className="mt-8 flex flex-wrap gap-3">
                         {user ? (
                             <Link href="/boards" className={buttonClass('primary', 'lg')}>

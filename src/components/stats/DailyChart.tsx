@@ -12,17 +12,17 @@ interface DailyChartProps {
 
 const axisTick = { fill: 'var(--muted)', fontSize: 12 };
 
-// Time per day as columns. One series, so one color and no legend; the title says what it is.
-// The same numbers are in the table below it, so nothing depends on hovering.
-// TR: Günlük süre sütunlar halinde. Tek seri, bu yüzden tek renk ve lejant yok; başlık ne olduğunu söyler.
-// TR: Aynı sayılar altındaki tabloda da var, böylece hiçbir şey fareyle üzerine gelmeye bağlı değil.
+// Shows the tracked time per day as a bar chart.
+// TR: Gün başına takip edilen süreyi çubuk grafikle gösterir.
 export function DailyChart({ title, days }: DailyChartProps) {
     const { t, language } = useLanguage();
 
-    // Show the axis in hours when there's at least an hour on some day, otherwise in minutes.
     const max = Math.max(0, ...days.map((d) => d.seconds));
     const unit = max >= 3600 ? 3600 : 60;
     const data = days.map((d) => ({ day: d.day, value: d.seconds / unit, seconds: d.seconds }));
+
+    // Formats an axis value in hours or minutes.
+    // TR: Bir eksen değerini saat ya da dakika olarak biçimlendirir.
     const formatTick = (value: number) => (unit === 3600 ? t.time.hours(value) : t.time.minutes(value));
 
     return (

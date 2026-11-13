@@ -18,10 +18,8 @@ interface RankedListProps {
     rows: RankedRow[];
 }
 
-// A list sorted by time, each row with a thin bar scaled to the biggest one.
-// The number is always written next to the bar.
-// TR: Süreye göre sıralı bir liste; her satırda en büyüğe göre ölçeklenmiş ince bir çubuk var.
-// TR: Sayı her zaman çubuğun yanında yazılıdır.
+// Shows a list sorted by time, each row with a bar.
+// TR: Süreye göre sıralı, her satırı çubuklu bir liste gösterir.
 export function RankedList({ title, rows }: RankedListProps) {
     const { t } = useLanguage();
     const sorted = [...rows].sort((a, b) => b.seconds - a.seconds);

@@ -11,12 +11,11 @@ interface StatsHeroProps {
     total: number;
     days: DaySeconds[];
     sideLabel: string;
-    // What got the most time (a person or a board). Empty when nothing was tracked.
     side?: ReactNode;
 }
 
-// The big total on the left, the "most time" item on the right.
-// TR: Solda büyük toplam, sağda "en çok süre" öğesi.
+// Shows the total time with the item that took the most time.
+// TR: Toplam süreyi en çok süre alan öğeyle birlikte gösterir.
 export function StatsHero({ total, days, sideLabel, side }: StatsHeroProps) {
     const { t, language } = useLanguage();
     const first = days[0]?.day;
@@ -49,6 +48,8 @@ interface TopItemProps {
     href?: string;
 }
 
+// Shows the item with the most time and its share of the total.
+// TR: En çok süre alan öğeyi ve toplamdaki payını gösterir.
 export function TopItem({ name, seconds, total, leading, href }: TopItemProps) {
     const { t } = useLanguage();
     const percent = total > 0 ? Math.round((seconds / total) * 100) : 0;
@@ -76,6 +77,8 @@ export function TopItem({ name, seconds, total, leading, href }: TopItemProps) {
     );
 }
 
+// Shows a message when no time was tracked.
+// TR: Hiç süre takip edilmediğinde bir mesaj gösterir.
 export function StatsEmpty({ text }: { text: string }) {
     return (
         <div className="flex flex-col items-start gap-3 rounded-xl border border-dashed border-line-strong px-6 py-10">

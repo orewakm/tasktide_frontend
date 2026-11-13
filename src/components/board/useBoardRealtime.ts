@@ -17,22 +17,20 @@ import { getSocket, useSocketEvent } from '@/lib/socket';
 
 export type GoneReason = 'deleted' | 'removed';
 
-// Joins the board's socket room while the board is open and applies every live event
-// to the React Query cache. Returns who is online and which timers are running here.
-// TR: Pano açıkken panonun socket odasına katılır ve her canlı event'i React Query
-// TR: önbelleğine uygular. Kimin çevrimiçi olduğunu ve burada hangi zamanlayıcıların çalıştığını döner.
+// Joins the board's live room and applies its events to the cache.
+// TR: Panonun canlı odasına katılır ve olaylarını önbelleğe uygular.
 export function useBoardRealtime(boardId: string, onGone: (reason: GoneReason) => void) {
     const queryClient = useQueryClient();
     const me = useCurrentUser();
     const [online, setOnline] = useState<OnlineUser[]>([]);
-    // Running timers on this board, by user id. Only known from events since the page opened.
-    // TR: Bu panoda çalışan zamanlayıcılar, kullanıcı id'sine göre. Sadece sayfa açıldığından beri gelen event'lerden bilinir.
     const [timers, setTimers] = useState<Record<string, TimeEntryDetails>>({});
 
     useEffect(() => {
         const socket = getSocket();
         let joinedBefore = false;
 
+        // Joins the board's room and saves who is online.
+        // TR: Panonun odasına katılır ve çevrimiçi kişileri kaydeder.
         function join() {
             socket
                 .emitWithAck('board:join', boardId)
@@ -40,8 +38,6 @@ export function useBoardRealtime(boardId: string, onGone: (reason: GoneReason) =
                     if (reply.ok) setOnline(reply.online);
                 })
                 .catch(() => {});
-            // After a reconnect, events sent while offline are lost: reload the board.
-            // TR: Yeniden bağlandıktan sonra çevrimdışıyken gönderilen event'ler kaybolmuştur: panoyu yeniden yükle.
             if (joinedBefore) {
                 for (const key of [
                     queryKeys.board(boardId),
@@ -63,15 +59,23 @@ export function useBoardRealtime(boardId: string, onGone: (reason: GoneReason) =
         };
     }, [boardId, queryClient]);
 
+    // Updates the board's columns in the cache.
+    // TR: Panonun sütunlarını önbellekte günceller.
     const setColumns = (update: (list: Column[] | undefined) => Column[] | undefined) =>
         queryClient.setQueryData<Column[]>(queryKeys.columns(boardId), update);
+
+    // Updates the board's cards in the cache.
+    // TR: Panonun kartlarını önbellekte günceller.
     const setCards = (update: (list: Card[] | undefined) => Card[] | undefined) =>
         queryClient.setQueryData<Card[]>(queryKeys.cards(boardId), update);
+
+    // Updates the board's members in the cache.
+    // TR: Panonun üyelerini önbellekte günceller.
     const setMembers = (update: (list: Member[] | undefined) => Member[] | undefined) =>
         queryClient.setQueryData<Member[]>(queryKeys.members(boardId), update);
 
-    // Card events carry no board id, so check the column is one of ours.
-    // TR: Kart event'leri pano id'si taşımaz, bu yüzden sütunun bizim sütunlarımızdan biri olduğunu kontrol et.
+    // Returns true if the column belongs to this board.
+    // TR: Sütun bu panoya aitse true döndürür.
     const isOurColumn = (columnId: string) =>
         queryClient.getQueryData<Column[]>(queryKeys.columns(boardId))?.some((c) => c.id === columnId) ?? false;
 
@@ -101,6 +105,8 @@ export function useBoardRealtime(boardId: string, onGone: (reason: GoneReason) =
         if (board_id === boardId) setMembers((list) => removeWhere(list, (m) => m.id === user_id));
     });
 
+    // Adds or updates a column from a live event.
+    // TR: Canlı bir olaydan gelen sütunu ekler ya da günceller.
     const onColumn = (column: Column) => {
         if (column.board_id === boardId) setColumns((list) => upsert(list, column));
     };
@@ -116,18 +122,21 @@ export function useBoardRealtime(boardId: string, onGone: (reason: GoneReason) =
         if (board_id === boardId) setColumns((list) => applyPositions(list, columns));
     });
 
+    // Adds or updates a card from a live event.
+    // TR: Canlı bir olaydan gelen kartı ekler ya da günceller.
     const onCard = (card: Card) => {
         if (isOurColumn(card.column_id)) setCards((list) => upsert(list, card));
     };
     useSocketEvent('card:created', onCard);
     useSocketEvent('card:updated', onCard);
-    // card:moved also carries from_column_id; keeping the extra field in the cache is harmless.
     useSocketEvent('card:moved', onCard);
     useSocketEvent('card:deleted', ({ id }) => setCards((list) => removeWhere(list, (c) => c.id === id)));
     useSocketEvent('cards:renumbered', ({ column_id, cards }) => {
         if (isOurColumn(column_id)) setCards((list) => applyPositions(list, cards));
     });
 
+    // Adds or updates a note from a live event.
+    // TR: Canlı bir olaydan gelen notu ekler ya da günceller.
     const onNote = (note: Note) =>
         queryClient.setQueryData<Note[]>(queryKeys.notes(note.card_id), (list) => upsert(list, note));
     useSocketEvent('note:created', onNote);

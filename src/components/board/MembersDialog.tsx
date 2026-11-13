@@ -24,6 +24,8 @@ interface MembersDialogProps {
     isOwner: boolean;
 }
 
+// Shows the board members, with invite and remove for the owner.
+// TR: Pano üyelerini, sahibi için davet ve çıkarma ile gösterir.
 export function MembersDialog({ open, onClose, board, members, online, isOwner }: MembersDialogProps) {
     const { t } = useLanguage();
 
@@ -37,6 +39,8 @@ export function MembersDialog({ open, onClose, board, members, online, isOwner }
     );
 }
 
+// Shows the form that invites someone by email.
+// TR: Birini e-postayla davet eden formu gösterir.
 function InviteForm({ boardId }: { boardId: string }) {
     const { t } = useLanguage();
     const queryClient = useQueryClient();
@@ -44,6 +48,8 @@ function InviteForm({ boardId }: { boardId: string }) {
     const [error, setError] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
 
+    // Sends the invitation and clears the form.
+    // TR: Daveti gönderir ve formu temizler.
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         const value = email.trim();
@@ -93,6 +99,8 @@ function InviteForm({ boardId }: { boardId: string }) {
     );
 }
 
+// Shows the owner, members and invitations in order.
+// TR: Sahibi, üyeleri ve davetleri sırayla gösterir.
 function MemberList({ board, members, online, isOwner }: Omit<MembersDialogProps, 'open' | 'onClose'>) {
     const { t } = useLanguage();
     const me = useCurrentUser();
@@ -100,10 +108,14 @@ function MemberList({ board, members, online, isOwner }: Omit<MembersDialogProps
     const [busyId, setBusyId] = useState<string | null>(null);
 
     const onlineIds = new Set(online.map((u) => u.id));
-    // Owner first, then active members, then invitations, each by name.
+
+    // Returns the sort rank: owner, then members, then invitations.
+    // TR: Sıralama derecesini döndürür: önce sahip, sonra üyeler, sonra davetler.
     const rank = (m: Member) => (m.id === board.owner_id ? 0 : m.status === 'active' ? 1 : 2);
     const sorted = [...members].sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 
+    // Removes a member or cancels an invitation.
+    // TR: Bir üyeyi çıkarır ya da bir daveti iptal eder.
     async function remove(member: Member) {
         setBusyId(member.id);
         try {

@@ -23,8 +23,6 @@ import { CardPanel } from './CardPanel';
 import { MembersDialog } from './MembersDialog';
 import { useBoardRealtime, type GoneReason } from './useBoardRealtime';
 
-// Only one dialog is open at a time, so one piece of state describes it.
-// TR: Aynı anda sadece bir diyalog açık olur, bu yüzden onu tek bir state tanımlar.
 type OpenDialog =
     | { kind: 'members' }
     | { kind: 'renameBoard' }
@@ -34,6 +32,8 @@ type OpenDialog =
     | { kind: 'deleteColumn'; column: Column }
     | null;
 
+// Loads a board and shows it with its dialogs and the card panel.
+// TR: Bir panoyu yükler ve pencereleri ile kart paneliyle birlikte gösterir.
 export function BoardScreen({ boardId }: { boardId: string }) {
     const { t } = useLanguage();
     const me = useCurrentUser();
@@ -46,14 +46,11 @@ export function BoardScreen({ boardId }: { boardId: string }) {
     const members = useQuery({ queryKey: queryKeys.members(boardId), queryFn: () => api.members.list(boardId) });
     const myTimer = useMyTimer();
 
-    // The open card lives in the URL (?card=id), so a card can be linked to (from the task list,
-    // or shared) and stays open after a reload. replaceState updates the URL without a reload,
-    // and Next.js keeps useSearchParams in sync with it.
-    // TR: Açık kart URL'de durur (?card=id); böylece bir karta bağlantı verilebilir (görev listesinden
-    // TR: ya da paylaşarak) ve sayfa yenilenince açık kalır. replaceState URL'yi sayfayı yenilemeden
-    // TR: günceller, Next.js de useSearchParams'ı bununla senkron tutar.
     const searchParams = useSearchParams();
     const openCardId = searchParams.get('card');
+
+    // Opens or closes a card by writing its id in the URL.
+    // TR: Kart kimliğini URL'ye yazarak bir kartı açar ya da kapatır.
     function setOpenCardId(id: string | null) {
         const url = new URL(window.location.href);
         if (id) url.searchParams.set('card', id);
@@ -61,18 +58,21 @@ export function BoardScreen({ boardId }: { boardId: string }) {
         window.history.replaceState(null, '', url);
     }
     const [dialog, setDialog] = useState<OpenDialog>(null);
+
+    // Closes the open dialog.
+    // TR: Açık pencereyi kapatır.
     const closeDialog = () => setDialog(null);
 
-    // Set right before this user deletes or leaves the board, so the live event
-    // that follows doesn't show a second message.
-    // TR: Bu kullanıcı panoyu silmeden veya panodan ayrılmadan hemen önce ayarlanır;
-    // TR: böylece ardından gelen canlı event ikinci bir mesaj göstermez.
     const leavingOnPurpose = useRef(false);
 
+    // Removes this board from my board list.
+    // TR: Bu panoyu pano listemden kaldırır.
     function dropBoardFromList() {
         queryClient.setQueryData<Board[]>(queryKeys.boards, (list) => removeWhere(list, (b) => b.id === boardId));
     }
 
+    // Leaves the page when the board is deleted or my access ends.
+    // TR: Pano silinince ya da erişimim bitince sayfadan çıkar.
     function handleGone(reason: GoneReason) {
         if (leavingOnPurpose.current) return;
         dropBoardFromList();
@@ -94,7 +94,6 @@ export function BoardScreen({ boardId }: { boardId: string }) {
     const canLeave = board.data.owner_id !== me.id;
     const membersById = new Map(members.data.map((member) => [member.id, member]));
 
-    // Running timers on this board: other people's from live events, plus our own.
     const others = Object.values(timers).filter((entry) => entry.user_id !== me.id);
     const cardsWithTimer = new Set(others.map((entry) => entry.card_id));
     if (myTimer.data?.board_id === boardId) cardsWithTimer.add(myTimer.data.card_id);
@@ -102,6 +101,8 @@ export function BoardScreen({ boardId }: { boardId: string }) {
     const openCard = openCardId ? cards.data.find((card) => card.id === openCardId) : undefined;
     const openCardColumn = openCard ? columns.data.find((column) => column.id === openCard.column_id) : undefined;
 
+    // Renames the board and updates the cache.
+    // TR: Panoyu yeniden adlandırır ve önbelleği günceller.
     async function renameBoard(name: string) {
         const updated = await api.boards.rename(boardId, name);
         queryClient.setQueryData(queryKeys.board(boardId), updated);
@@ -109,6 +110,8 @@ export function BoardScreen({ boardId }: { boardId: string }) {
         toast.success(t.boards.renamed);
     }
 
+    // Deletes the board and goes back to the board list.
+    // TR: Panoyu siler ve pano listesine geri döner.
     async function deleteBoard() {
         leavingOnPurpose.current = true;
         try {
@@ -123,6 +126,8 @@ export function BoardScreen({ boardId }: { boardId: string }) {
         router.replace('/boards');
     }
 
+    // Leaves the board and goes back to the board list.
+    // TR: Panodan ayrılır ve pano listesine geri döner.
     async function leaveBoard() {
         leavingOnPurpose.current = true;
         try {
@@ -137,11 +142,15 @@ export function BoardScreen({ boardId }: { boardId: string }) {
         router.replace('/boards');
     }
 
+    // Renames a column and updates the cache.
+    // TR: Bir sütunu yeniden adlandırır ve önbelleği günceller.
     async function renameColumn(column: Column, name: string) {
         const updated = await api.columns.rename(column.id, name);
         queryClient.setQueryData<Column[]>(queryKeys.columns(boardId), (list) => upsert(list, updated));
     }
 
+    // Deletes a column together with its cards.
+    // TR: Bir sütunu kartlarıyla birlikte siler.
     async function deleteColumn(column: Column) {
         try {
             await api.columns.remove(column.id);
@@ -157,11 +166,11 @@ export function BoardScreen({ boardId }: { boardId: string }) {
         );
     }
 
+    // Returns how many cards a column has.
+    // TR: Bir sütunda kaç kart olduğunu döndürür.
     const columnCardCount = (column: Column) => cards.data.filter((card) => card.column_id === column.id).length;
 
     return (
-        // 57px is the app header (h-14 plus its 1px border). The board fills the rest,
-        // and long columns scroll on their own.
         <main className="flex h-[calc(100dvh-57px)] min-h-0 flex-col">
             <BoardHeader
                 board={board.data}
@@ -259,6 +268,8 @@ export function BoardScreen({ boardId }: { boardId: string }) {
     );
 }
 
+// Shows an error when the board can't be loaded.
+// TR: Pano yüklenemediğinde bir hata gösterir.
 function LoadError({ message }: { message: string }) {
     return (
         <main className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">

@@ -11,6 +11,8 @@ import { Avatar } from '@/components/ui/Avatar';
 import { IconButton } from '@/components/ui/IconButton';
 import { useLanguage } from '@/i18n/useLanguage';
 
+// Shows the top bar with navigation, the running timer and logout.
+// TR: Gezinme, çalışan zamanlayıcı ve çıkış ile üst çubuğu gösterir.
 export function Header() {
     const user = useCurrentUser();
     const { logout } = useAuth();

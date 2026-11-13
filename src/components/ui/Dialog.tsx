@@ -8,14 +8,11 @@ interface DialogProps {
     title: string;
     description?: ReactNode;
     children?: ReactNode;
-    // Narrow confirm dialogs vs. wider content dialogs.
     width?: 'sm' | 'md';
 }
 
-// Uses the browser's own <dialog> element: it traps focus, closes on Escape and
-// blocks the page behind it, without any extra library.
-// TR: Tarayıcının kendi <dialog> elementini kullanır: odağı içeride tutar, Escape ile kapanır
-// TR: ve arkadaki sayfayı engeller; ek bir kütüphaneye gerek kalmaz.
+// Shows a modal dialog with the browser's dialog element.
+// TR: Tarayıcının dialog öğesiyle modal bir pencere gösterir.
 export function Dialog({ open, onClose, title, description, children, width = 'sm' }: DialogProps) {
     const ref = useRef<HTMLDialogElement>(null);
 
@@ -30,7 +27,6 @@ export function Dialog({ open, onClose, title, description, children, width = 's
         <dialog
             ref={ref}
             onClose={onClose}
-            // A click on the dialog element itself (not its content) is a click on the backdrop.
             onClick={(event) => {
                 if (event.target === ref.current) onClose();
             }}

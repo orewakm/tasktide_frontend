@@ -15,10 +15,8 @@ import { TaskFilterBar } from './TaskFilterBar';
 import { TaskTable } from './TaskTable';
 import { clearFilters, hasFilters, PAGE_SIZE, toCardQuery, updateFilters, useTaskFilters, type TaskFilters } from './taskFilters';
 
-// The task list: cards from all my boards, with search, filters, sorting and pages.
-// Everything you pick is kept in the URL, so it survives a reload and can be shared.
-// TR: Görev listesi: tüm panolarımdaki kartlar; arama, filtre, sıralama ve sayfalarla.
-// TR: Seçtiğiniz her şey URL'de tutulur; böylece sayfa yenilense de kalır ve paylaşılabilir.
+// Shows the task list with the filters kept in the URL.
+// TR: Filtreleri URL'de tutulan görev listesini gösterir.
 export function TasksScreen() {
     const { t } = useLanguage();
     const filters = useTaskFilters();
@@ -27,8 +25,6 @@ export function TasksScreen() {
     const tasks = useQuery({
         queryKey: queryKeys.tasks(query),
         queryFn: () => api.cards.find(query),
-        // While new results load, keep showing the old ones (faded) instead of a skeleton.
-        // TR: Yeni sonuçlar yüklenirken iskelet yerine eskilerini (soluk) göstermeye devam et.
         placeholderData: keepPreviousData,
     });
     const boards = useQuery({ queryKey: queryKeys.boards, queryFn: api.boards.list });
@@ -65,6 +61,8 @@ export function TasksScreen() {
     );
 }
 
+// Shows the task table, or a message when nothing matches.
+// TR: Görev tablosunu ya da hiçbir şey eşleşmezse bir mesaj gösterir.
 function TaskResults({ page, filters }: { page: CardPage; filters: TaskFilters }) {
     const { t } = useLanguage();
 
@@ -111,8 +109,6 @@ function TaskResults({ page, filters }: { page: CardPage; filters: TaskFilters }
         );
     }
 
-    // A link to a page past the end (e.g. ?page=9 when there are 3 pages).
-    // TR: Son sayfadan sonraki bir sayfaya bağlantı (ör. 3 sayfa varken ?page=9).
     if (page.data.length === 0) {
         return (
             <div className="flex flex-wrap items-center gap-3 rounded-xl border border-dashed border-line-strong px-4 py-6 text-sm text-muted">
@@ -132,11 +128,15 @@ function TaskResults({ page, filters }: { page: CardPage; filters: TaskFilters }
     );
 }
 
+// Shows the result range and the previous and next buttons.
+// TR: Sonuç aralığını ve önceki ile sonraki butonlarını gösterir.
 function Pagination({ page }: { page: CardPage }) {
     const { t } = useLanguage();
     const from = (page.page - 1) * PAGE_SIZE + 1;
     const to = from + page.data.length - 1;
 
+    // Opens another page of results and scrolls to the top.
+    // TR: Sonuçların başka bir sayfasını açar ve en üste kaydırır.
     function goTo(next: number) {
         updateFilters({ page: next });
         window.scrollTo({ top: 0 });
@@ -170,8 +170,8 @@ function Pagination({ page }: { page: CardPage }) {
     );
 }
 
-// Same shape as the real table: a header row and a few task rows.
-// TR: Gerçek tabloyla aynı şekil: bir başlık satırı ve birkaç görev satırı.
+// Shows a placeholder table while the tasks load.
+// TR: Görevler yüklenirken yer tutucu bir tablo gösterir.
 function TasksSkeleton() {
     return (
         <div className="overflow-hidden rounded-xl border border-line bg-surface" aria-busy="true">

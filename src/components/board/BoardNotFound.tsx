@@ -6,8 +6,8 @@ import { buttonClass } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useLanguage } from '@/i18n/useLanguage';
 
-// The API answers 404 both when a board doesn't exist and when you're not a member.
-// TR: API, hem pano yokken hem de üye değilken 404 döner.
+// Shows a message when the board doesn't exist or isn't mine.
+// TR: Pano yoksa ya da bana ait değilse bir mesaj gösterir.
 export function BoardNotFound() {
     const { t } = useLanguage();
 

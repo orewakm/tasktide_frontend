@@ -2,14 +2,14 @@ import { CellSignalHighIcon, CellSignalLowIcon, CellSignalMediumIcon } from '@ph
 import { useLanguage } from '@/i18n/useLanguage';
 import type { Priority } from '@/interfaces';
 
-// className colors the icon and text; pill is the tinted background on cards.
-// TR: className ikon ve yazıyı renklendirir; pill kartlardaki renkli arka plandır.
 const STYLES: Record<Priority, { icon: typeof CellSignalLowIcon; className: string; pill: string }> = {
     low: { icon: CellSignalLowIcon, className: 'text-muted', pill: 'bg-sunken' },
     medium: { icon: CellSignalMediumIcon, className: 'text-warn', pill: 'bg-warn/12' },
     high: { icon: CellSignalHighIcon, className: 'text-danger', pill: 'bg-danger/10' },
 };
 
+// Shows the priority as a colored pill.
+// TR: Önceliği renkli bir etiket olarak gösterir.
 export function PriorityTag({ priority }: { priority: Priority }) {
     const { t } = useLanguage();
     const { icon: Icon, className, pill } = STYLES[priority];

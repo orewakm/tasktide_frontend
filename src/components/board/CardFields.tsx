@@ -16,10 +16,8 @@ interface FieldProps {
     onSave: SaveCard;
 }
 
-// The title edits in place. The version is taken when editing starts, so if someone else
-// saves in between, the server answers 409 instead of silently overwriting their change.
-// TR: Başlık yerinde düzenlenir. Versiyon düzenleme başlarken alınır; böylece arada başka biri
-// TR: kaydederse sunucu onun değişikliğinin üzerine sessizce yazmak yerine 409 döner.
+// Shows the card title and saves it when edited in place.
+// TR: Kart başlığını gösterir ve yerinde düzenlenince kaydeder.
 export function TitleField({ card, onSave, id }: FieldProps & { id: string }) {
     const { t } = useLanguage();
     const [draft, setDraft] = useState<string | null>(null);
@@ -61,16 +59,19 @@ export function TitleField({ card, onSave, id }: FieldProps & { id: string }) {
 }
 
 interface DescriptionFieldProps extends FieldProps {
-    // Did someone else save the card between these two versions?
     changedByOthers: (since: number, latest: number) => boolean;
 }
 
+// Shows the card description and lets the user edit it.
+// TR: Kart açıklamasını gösterir ve kullanıcının düzenlemesini sağlar.
 export function DescriptionField({ card, onSave, changedByOthers }: DescriptionFieldProps) {
     const { t } = useLanguage();
     const [editing, setEditing] = useState<{ text: string; version: number } | null>(null);
     const [busy, setBusy] = useState(false);
 
     if (!editing) {
+        // Starts editing the description from the current version.
+        // TR: Açıklamayı geçerli sürümden düzenlemeye başlar.
         const start = () => setEditing({ text: card.description ?? '', version: card.version });
         return card.description ? (
             <button
@@ -93,13 +94,14 @@ export function DescriptionField({ card, onSave, changedByOthers }: DescriptionF
 
     const changedElsewhere = changedByOthers(editing.version, card.version);
 
+    // Saves the edited description.
+    // TR: Düzenlenen açıklamayı kaydeder.
     async function save() {
         if (!editing) return;
         setBusy(true);
         const text = editing.text.trim();
         const result = await onSave({ description: text || null }, editing.version);
         setBusy(false);
-        // On a conflict the card was reloaded: close the editor so the user starts from the new text.
         if (result !== 'error') setEditing(null);
     }
 
@@ -146,8 +148,8 @@ export function DescriptionField({ card, onSave, changedByOthers }: DescriptionF
     );
 }
 
-// Status, priority and assignee save right away with the card's current version.
-// TR: Durum, öncelik ve atanan kişi kartın güncel versiyonuyla hemen kaydedilir.
+// Shows the status, priority and assignee and saves changes right away.
+// TR: Durumu, önceliği ve atanan kişiyi gösterir, değişiklikleri hemen kaydeder.
 export function CardProperties({ card, onSave, members }: FieldProps & { members: Member[] }) {
     const { t } = useLanguage();
     const done = card.completed_at !== null;

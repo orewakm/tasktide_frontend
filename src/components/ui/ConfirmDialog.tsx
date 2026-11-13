@@ -11,21 +11,23 @@ interface ConfirmDialogProps {
     title: string;
     description: ReactNode;
     confirmLabel: string;
-    // Should resolve when done. If it throws, the dialog stays open so the user can retry.
     onConfirm: () => Promise<void>;
 }
 
+// Shows a dialog that asks the user to confirm an action.
+// TR: Kullanıcıdan bir işlemi onaylamasını isteyen bir pencere gösterir.
 export function ConfirmDialog({ open, onClose, title, description, confirmLabel, onConfirm }: ConfirmDialogProps) {
     const { t } = useLanguage();
     const [busy, setBusy] = useState(false);
 
+    // Runs the action and closes the dialog if it succeeds.
+    // TR: İşlemi çalıştırır ve başarılı olursa pencereyi kapatır.
     async function confirm() {
         setBusy(true);
         try {
             await onConfirm();
             onClose();
         } catch {
-            // The caller already showed the error.
         } finally {
             setBusy(false);
         }

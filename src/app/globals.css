@@ -1,12 +1,5 @@
 @import 'tailwindcss';
 
-/*
- * TaskTide design tokens: "Midnight Focus".
- * Navy for structure, amber for anything you act on (buttons, running timers, focus).
- * Corner radius rule: buttons, inputs and cards 8px (rounded-lg),
- * columns, panels and dialogs 12px (rounded-xl), avatars and pills fully round.
- * TR: Yapı için lacivert, üzerinde işlem yapılan her şey için kehribar (butonlar, çalışan zamanlayıcılar, odak).
- */
 @theme inline {
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
@@ -43,20 +36,16 @@
     --muted: #56617c;
     --accent: #f0a020;
     --accent-hover: #e08f0c;
-    /* Amber dark enough to read as text on white. */
     --accent-ink: #95560a;
     --on-accent: #1d1404;
     --danger: #c4321c;
     --on-danger: #fff6f3;
     --warn: #a86400;
     --online: #16a34a;
-    /* Finished cards. Green reads as "done" at a glance. */
     --done: #15803d;
-    /* Progress bars (share of cards done). Checked with the dataviz validator. */
     --progress: #15803d;
     --deep: #0f1a36;
     --on-deep: #e9eef9;
-    /* Chart bars: amber that stays readable on white (checked with the dataviz validator). */
     --chart: #c97a08;
     --focus: #d17c00;
     color-scheme: light;
@@ -89,12 +78,6 @@
     }
 }
 
-/*
- * Navy areas (the app header, the login side panel). Everything inside reuses the normal
- * classes (bg-surface, text-muted...), which pick up these values instead.
- * TR: Lacivert alanlar (uygulama header'ı, giriş yan paneli). İçerideki her şey normal
- * TR: sınıfları (bg-surface, text-muted...) kullanır ve bu değerleri alır.
- */
 .theme-deep {
     --canvas: #0f1a36;
     --surface: #1c2a52;
@@ -137,10 +120,6 @@
     }
 }
 
-/*
- * Entrance animations for side panels, dialogs and menus.
- * Used with motion-safe: so they are skipped for people who prefer less motion.
- */
 @theme {
     --animate-panel: slide-in-right 220ms cubic-bezier(0.16, 1, 0.3, 1);
     --animate-rise: rise-in 180ms cubic-bezier(0.16, 1, 0.3, 1);

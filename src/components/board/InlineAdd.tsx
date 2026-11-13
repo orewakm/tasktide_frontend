@@ -12,19 +12,20 @@ interface InlineAddProps {
     buttonLabel: string;
     inputLabel: string;
     maxLength: number;
-    // Called with the trimmed text. The form stays open afterwards for quick entry.
     onAdd: (text: string) => Promise<void>;
     variant?: 'card' | 'column';
 }
 
-// "+ Add card" / "+ Add column": a button that turns into a one-line form.
-// TR: "+ Kart ekle" / "+ Sütun ekle": tek satırlık bir forma dönüşen buton.
+// Shows an add button that turns into a one-line form.
+// TR: Tek satırlık bir forma dönüşen bir ekleme butonu gösterir.
 export function InlineAdd({ buttonLabel, inputLabel, maxLength, onAdd, variant = 'card' }: InlineAddProps) {
     const { t } = useLanguage();
     const [open, setOpen] = useState(false);
     const [text, setText] = useState('');
     const [busy, setBusy] = useState(false);
 
+    // Adds the typed item and keeps the form open for the next one.
+    // TR: Yazılan öğeyi ekler ve formu bir sonraki için açık tutar.
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         const trimmed = text.trim();

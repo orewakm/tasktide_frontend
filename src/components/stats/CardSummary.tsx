@@ -12,13 +12,13 @@ import { api } from '@/lib/api';
 import { errorText } from '@/lib/errors';
 import { queryKeys } from '@/lib/queryKeys';
 
+// Returns the share of done cards as a whole percent.
+// TR: Tamamlanan kartların oranını tam sayı yüzde olarak döndürür.
 const percentDone = (counts: CardCounts) =>
     counts.total > 0 ? Math.round((counts.completed / counts.total) * 100) : 0;
 
-// How far the board's cards are: done vs not done, overall and per column, priority and person.
-// Card counts are not tied to the date range below, so this section has its own query.
-// TR: Panodaki kartların durumu: tamamlanan ve tamamlanmayan, toplamda ve sütun, öncelik ve kişiye göre.
-// TR: Kart sayıları aşağıdaki tarih aralığına bağlı değil, bu yüzden bu bölümün kendi sorgusu var.
+// Loads and shows how many of the board's cards are done.
+// TR: Panonun kartlarından kaçının tamamlandığını yükler ve gösterir.
 export function CardSummary({ boardId }: { boardId: string }) {
     const { t } = useLanguage();
     const summary = useQuery({ queryKey: queryKeys.boardSummary(boardId), queryFn: () => api.stats.summary(boardId) });
@@ -51,6 +51,8 @@ export function CardSummary({ boardId }: { boardId: string }) {
     return <SummaryBody summary={summary.data} />;
 }
 
+// Shows the done percentage and the lists per column, priority and person.
+// TR: Tamamlanma yüzdesini ve sütun, öncelik ve kişi listelerini gösterir.
 function SummaryBody({ summary }: { summary: BoardSummary }) {
     const { t } = useLanguage();
     const percent = percentDone(summary);
@@ -113,8 +115,8 @@ interface BreakdownRow {
     muted?: boolean;
 }
 
-// One panel of rows, each with "done/total" and a bar showing the share that's done.
-// TR: Satırlardan oluşan bir panel; her satırda "tamamlanan/toplam" ve tamamlanan payını gösteren bir çubuk.
+// Shows a list of rows with done and total cards.
+// TR: Tamamlanan ve toplam kartlarla bir satır listesi gösterir.
 function BreakdownList({ title, rows }: { title: string; rows: BreakdownRow[] }) {
     const { t } = useLanguage();
 
@@ -134,7 +136,6 @@ function BreakdownList({ title, rows }: { title: string; rows: BreakdownRow[] })
                                     ) : (
                                         <>
                                             <span aria-hidden>{t.stats.rowDone(row.counts.completed, row.counts.total)}</span>
-                                            {/* Screen readers get the full sentence instead of "3/5". */}
                                             <span className="sr-only">
                                                 {t.stats.rowDoneLabel(row.counts.completed, row.counts.total)}
                                             </span>
@@ -151,10 +152,8 @@ function BreakdownList({ title, rows }: { title: string; rows: BreakdownRow[] })
     );
 }
 
-// A thin track filled up to the share of cards that are done. The numbers are always written
-// next to it, so the bar is never the only way to read the value.
-// TR: Tamamlanan kart payı kadar dolan ince bir çubuk. Sayılar her zaman yanında yazılı,
-// TR: bu yüzden değeri okumanın tek yolu çubuk değildir.
+// Shows a bar filled up to the share of done cards.
+// TR: Tamamlanan kartların oranı kadar dolu bir çubuk gösterir.
 function Meter({ counts, size = 'sm' }: { counts: CardCounts; size?: 'sm' | 'lg' }) {
     const percent = percentDone(counts);
 

@@ -15,8 +15,8 @@ import { Avatar } from '@/components/ui/Avatar';
 import { useLanguage } from '@/i18n/useLanguage';
 import { formatDuration } from '@/lib/format';
 
-// Four feature tiles (two wide ones with a small picture), then a row of smaller extras.
-// TR: Dört özellik kutusu (ikisi geniş ve küçük bir resimli), ardından küçük ekstralar satırı.
+// Shows the feature tiles and extras of the landing page.
+// TR: Tanıtım sayfasının özellik kutularını ve ekstralarını gösterir.
 export function Features() {
     const { t } = useLanguage();
     const f = t.landing.features;
@@ -91,12 +91,12 @@ interface TileProps {
     icon: ReactNode;
     title: string;
     body: string;
-    // Wide tiles take two of the three columns on big screens, with the picture next to the text.
-    // TR: Geniş kutular büyük ekranlarda üç sütunun ikisini kaplar; resim metnin yanında durur.
     wide?: boolean;
     children?: ReactNode;
 }
 
+// Shows one feature tile with an icon, a title and a text.
+// TR: Simge, başlık ve metinle bir özellik kutusu gösterir.
 function Tile({ icon, title, body, wide = false, children }: TileProps) {
     return (
         <div
@@ -116,8 +116,8 @@ function Tile({ icon, title, body, wide = false, children }: TileProps) {
     );
 }
 
-// Two made-up updates, like the ones you see on a board when a teammate does something.
-// TR: Bir ekip arkadaşı bir şey yaptığında panoda gördüklerinize benzeyen iki uydurma güncelleme.
+// Shows two made-up live updates from teammates.
+// TR: Ekip arkadaşlarından iki örnek canlı güncelleme gösterir.
 function ActivityFeed() {
     const { t } = useLanguage();
     const a = t.landing.features.activity;
@@ -144,10 +144,10 @@ function ActivityFeed() {
     );
 }
 
-// A made-up week of tracked hours, Monday to Sunday.
-// TR: Uydurma bir haftanın takip edilen saatleri, pazartesiden pazara.
 const WEEK_HOURS = [3.5, 5.25, 2, 6.5, 4, 1.5, 0.5];
 
+// Shows a made-up week of tracked hours as bars.
+// TR: Örnek bir haftanın takip edilen saatlerini çubuklarla gösterir.
 function WeekChart() {
     const { t } = useLanguage();
     const total = WEEK_HOURS.reduce((sum, hours) => sum + hours, 0);

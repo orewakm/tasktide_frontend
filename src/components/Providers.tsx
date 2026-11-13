@@ -6,6 +6,8 @@ import { Toaster } from 'sonner';
 import { useLanguage } from '@/i18n/useLanguage';
 import { AuthProvider } from './AuthProvider';
 
+// Provides data caching, login, toasts and the page language to the app.
+// TR: Uygulamaya veri önbelleği, oturum, bildirimler ve sayfa dilini sağlar.
 export function Providers({ children }: { children: ReactNode }) {
     const [queryClient] = useState(
         () =>
@@ -15,7 +17,6 @@ export function Providers({ children }: { children: ReactNode }) {
     );
     const { language } = useLanguage();
 
-    // Keep <html lang="..."> in sync so the browser and screen readers know the language.
     useEffect(() => {
         document.documentElement.lang = language;
     }, [language]);

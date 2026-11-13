@@ -13,6 +13,8 @@ const SIZES = {
     md: 'size-8 text-xs',
 };
 
+// Shows a person's initials in a circle, with an optional online dot.
+// TR: Bir kişinin baş harflerini, isteğe bağlı çevrimiçi noktasıyla yuvarlak içinde gösterir.
 export function Avatar({ name, size = 'sm', online, className = '' }: AvatarProps) {
     return (
         <span

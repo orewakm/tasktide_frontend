@@ -8,8 +8,6 @@ import type { Board, CardStatus, Priority } from '@/interfaces';
 import { clearFilters, hasFilters, SORTS, updateFilters, type Scope, type SortKey, type TaskFilters } from './taskFilters';
 
 const SEARCH_DELAY_MS = 300;
-// Its own class instead of inputClass, which is full width with bigger text.
-// TR: inputClass yerine kendi sınıfı; inputClass tam genişlikte ve yazısı daha büyük.
 const selectClass =
     'h-9 min-w-0 rounded-lg border border-line bg-surface pr-8 pl-3 text-[13px] text-ink transition-[border-color,box-shadow] duration-150 hover:border-line-strong focus:border-accent focus:ring-3 focus:ring-accent/15 focus-visible:outline-none';
 
@@ -18,6 +16,8 @@ interface TaskFilterBarProps {
     boards: Board[];
 }
 
+// Shows the search box, the filters and the sort menu.
+// TR: Arama kutusunu, filtreleri ve sıralama menüsünü gösterir.
 export function TaskFilterBar({ filters, boards }: TaskFilterBarProps) {
     const { t } = useLanguage();
 
@@ -96,19 +96,13 @@ export function TaskFilterBar({ filters, boards }: TaskFilterBarProps) {
     );
 }
 
-// The search box keeps what you type in its own state and writes it to the URL a moment
-// after you stop typing, so the list doesn't reload on every key press.
-// TR: Arama kutusu yazdıklarınızı kendi state'inde tutar ve yazmayı bıraktıktan kısa süre sonra
-// TR: URL'ye yazar; böylece liste her tuşta yeniden yüklenmez.
+// Shows the search box and writes the search to the URL after typing stops.
+// TR: Arama kutusunu gösterir ve yazma bitince aramayı URL'ye yazar.
 function SearchBox({ value }: { value: string }) {
     const { t } = useLanguage();
     const [text, setText] = useState(value);
     const timer = useRef<number | undefined>(undefined);
 
-    // When the URL changes from outside (Clear filters, Back button), show its value.
-    // React's pattern for adjusting state when a prop changes: compare during render.
-    // TR: URL dışarıdan değişince (Filtreleri temizle, Geri butonu) onun değerini göster.
-    // TR: Bir prop değişince state'i ayarlamak için React'in önerdiği yol: render sırasında karşılaştırmak.
     const [lastValue, setLastValue] = useState(value);
     if (value !== lastValue) {
         setLastValue(value);
@@ -117,6 +111,8 @@ function SearchBox({ value }: { value: string }) {
 
     useEffect(() => () => window.clearTimeout(timer.current), []);
 
+    // Updates the text and restarts the search delay.
+    // TR: Metni günceller ve arama gecikmesini yeniden başlatır.
     function onChange(next: string) {
         setText(next);
         window.clearTimeout(timer.current);
@@ -142,12 +138,14 @@ function SearchBox({ value }: { value: string }) {
     );
 }
 
-// "Assigned to me" or "All tasks". A radio group: arrow keys move between the options.
-// TR: "Bana atananlar" ya da "Tüm görevler". Bir radio grubu: ok tuşları seçenekler arasında gezer.
+// Shows the switch between my tasks and all tasks.
+// TR: Görevlerim ile tüm görevler arasındaki seçiciyi gösterir.
 function ScopeSwitch({ value }: { value: Scope }) {
     const { t } = useLanguage();
     const scopes: Scope[] = ['me', 'all'];
 
+    // Moves to the other option with the arrow keys.
+    // TR: Ok tuşlarıyla diğer seçeneğe geçer.
     function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
         if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
         event.preventDefault();

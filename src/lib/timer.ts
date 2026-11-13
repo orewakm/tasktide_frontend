@@ -7,31 +7,33 @@ import { errorText } from '@/lib/errors';
 import { formatDuration } from '@/lib/format';
 import { queryKeys } from '@/lib/queryKeys';
 
-// My running timer (or null). The header, the board and the card panel all read this.
-// TR: Çalışan zamanlayıcım (veya null). Header, pano ve kart paneli hepsi bunu okur.
+// Returns my running timer, or null.
+// TR: Çalışan zamanlayıcımı ya da null döndürür.
 export function useMyTimer() {
     return useQuery({ queryKey: queryKeys.timer, queryFn: api.time.current });
 }
 
-// Seconds on the clock right now. duration_seconds is counted by the server up to the moment
-// it answered, so we only add the time since then. That avoids clock differences between
-// the browser and the server.
-// TR: Şu an saatteki saniye. duration_seconds sunucunun cevap verdiği ana kadar sayılmıştır,
-// TR: bu yüzden sadece o andan beri geçen süreyi ekleriz. Böylece tarayıcı ile sunucu arasındaki
-// TR: saat farkı sorun olmaz.
+// Returns the seconds on the timer right now.
+// TR: Zamanlayıcıdaki şu anki saniyeyi döndürür.
 export function elapsedSeconds(entry: TimeEntryDetails, receivedAt: number, now: number): number {
     return entry.duration_seconds + Math.max(0, now - receivedAt) / 1000;
 }
 
+// Returns the functions that start and stop my timer.
+// TR: Zamanlayıcımı başlatan ve durduran fonksiyonları döndürür.
 export function useTimerActions() {
     const queryClient = useQueryClient();
     const { t } = useLanguage();
 
+    // Reloads a card's time entries and total time.
+    // TR: Bir kartın zaman kayıtlarını ve toplam süresini yeniden yükler.
     function refreshCard(cardId: string) {
         void queryClient.invalidateQueries({ queryKey: queryKeys.timeEntries(cardId) });
         void queryClient.invalidateQueries({ queryKey: queryKeys.cardStats(cardId) });
     }
 
+    // Stops my running timer.
+    // TR: Çalışan zamanlayıcımı durdurur.
     async function stop(options: { quiet?: boolean } = {}) {
         try {
             const entry = await api.time.stop();
@@ -45,8 +47,8 @@ export function useTimerActions() {
         }
     }
 
-    // Only one timer can run, so a running one elsewhere is stopped first.
-    // TR: Tek bir zamanlayıcı çalışabilir, bu yüzden başka yerde çalışan önce durdurulur.
+    // Starts my timer on a card, stopping a running one first.
+    // TR: Önce çalışanı durdurarak bir kartta zamanlayıcımı başlatır.
     async function start(cardId: string) {
         const running = queryClient.getQueryData<TimeEntryDetails | null>(queryKeys.timer);
         if (running) await stop({ quiet: true });

@@ -2,6 +2,8 @@ import { Suspense } from 'react';
 import { BoardStatsScreen } from '@/components/stats/BoardStatsScreen';
 import { StatsSkeleton } from '@/components/stats/StatsSkeleton';
 
+// Shows the stats of the board whose id is in the URL.
+// TR: URL'deki kimliğe ait panonun istatistiklerini gösterir.
 export default function BoardStatsPage({ params }: PageProps<'/boards/[id]/stats'>) {
     return (
         <Suspense

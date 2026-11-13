@@ -22,6 +22,8 @@ import { removeWhere, upsert } from '@/lib/lists';
 import { isBoardOwner } from '@/lib/permissions';
 import { queryKeys } from '@/lib/queryKeys';
 
+// Shows my boards, pending invitations and the new board button.
+// TR: Panolarımı, bekleyen davetleri ve yeni pano butonunu gösterir.
 export default function BoardsPage() {
     const { t } = useLanguage();
     const user = useCurrentUser();
@@ -35,9 +37,10 @@ export default function BoardsPage() {
     const [renaming, setRenaming] = useState<Board | null>(null);
     const [deleting, setDeleting] = useState<Board | null>(null);
 
-    // Newest first. Boards added by live events land at the end of the cache, so sort here.
     const sortedBoards = [...(boards.data ?? [])].sort((a, b) => b.created_at.localeCompare(a.created_at));
 
+    // Creates a board, adds it to the list and opens it.
+    // TR: Bir pano oluşturur, listeye ekler ve onu açar.
     async function createBoard(name: string) {
         const board = await api.boards.create(name);
         queryClient.setQueryData<Board[]>(queryKeys.boards, (list) => upsert(list, board));
@@ -45,12 +48,16 @@ export default function BoardsPage() {
         router.push(`/boards/${board.id}`);
     }
 
+    // Renames a board and updates the list.
+    // TR: Bir panoyu yeniden adlandırır ve listeyi günceller.
     async function renameBoard(board: Board, name: string) {
         const updated = await api.boards.rename(board.id, name);
         queryClient.setQueryData<Board[]>(queryKeys.boards, (list) => upsert(list, updated));
         toast.success(t.boards.renamed);
     }
 
+    // Deletes a board and removes it from the list.
+    // TR: Bir panoyu siler ve listeden kaldırır.
     async function deleteBoard(board: Board) {
         try {
             await api.boards.remove(board.id);

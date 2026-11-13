@@ -10,10 +10,8 @@ import { removeWhere, upsert } from '@/lib/lists';
 import { queryKeys } from '@/lib/queryKeys';
 import { getSocket, useSocketEvent } from '@/lib/socket';
 
-// Connects the socket while someone is logged in, and handles the events that are
-// sent to the user personally (invitations, boards added or removed).
-// TR: Biri giriş yapmışken socket'i bağlar ve doğrudan kullanıcıya gönderilen
-// TR: event'leri (davetler, eklenen veya çıkarılan panolar) işler.
+// Keeps the live connection open and handles personal events.
+// TR: Canlı bağlantıyı açık tutar ve kişiye özel olayları işler.
 export function RealtimeConnection() {
     const queryClient = useQueryClient();
     const { t } = useLanguage();
@@ -22,9 +20,9 @@ export function RealtimeConnection() {
         const socket = getSocket();
         let connectedBefore = false;
 
+        // Reloads boards, invitations and the timer after a reconnect.
+        // TR: Yeniden bağlanınca panoları, davetleri ve zamanlayıcıyı yeniden yükler.
         function onConnect() {
-            // Events sent while we were offline are lost, so reload the lists after a reconnect.
-            // TR: Çevrimdışıyken gönderilen event'ler kaybolur, bu yüzden yeniden bağlanınca listeleri yeniden yükle.
             if (connectedBefore) {
                 void queryClient.invalidateQueries({ queryKey: queryKeys.boards });
                 void queryClient.invalidateQueries({ queryKey: queryKeys.invitations });
@@ -33,6 +31,8 @@ export function RealtimeConnection() {
             connectedBefore = true;
         }
 
+        // Logs out when the server rejects the session.
+        // TR: Sunucu oturumu reddederse çıkış yapar.
         function onConnectError(err: Error) {
             if (err.message === 'Unauthorized') reportUnauthorized();
         }

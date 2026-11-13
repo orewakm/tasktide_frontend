@@ -28,10 +28,8 @@ const ROLE_STYLES: Record<Role, string> = {
 };
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
-// Admins see every account. Only the super admin can change roles, and never their own
-// or the super admin's (the API checks the same rules).
-// TR: Adminler tüm hesapları görür. Rolleri sadece süper admin değiştirebilir; kendi rolünü
-// TR: veya süper adminin rolünü asla (API de aynı kuralları kontrol eder).
+// Shows the admin page, where the super admin can change roles.
+// TR: Süper yöneticinin rolleri değiştirebildiği yönetici sayfasını gösterir.
 export function AdminScreen() {
     const { t } = useLanguage();
     const me = useCurrentUser();
@@ -58,12 +56,13 @@ export function AdminScreen() {
     return <UserDirectory canEditRoles={me.role === 'super_admin'} />;
 }
 
+// Loads and shows every account with a few totals.
+// TR: Tüm hesapları yükler ve birkaç toplamla gösterir.
 function UserDirectory({ canEditRoles }: { canEditRoles: boolean }) {
     const { t } = useLanguage();
     const users = useQuery({ queryKey: queryKeys.adminUsers, queryFn: api.admin.users });
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState<Filter>('all');
-    // Read the clock once, for the "joined this week" count.
     const [now] = useState(() => Date.now());
 
     const all = users.data ?? [];
@@ -184,6 +183,8 @@ function UserDirectory({ canEditRoles }: { canEditRoles: boolean }) {
     );
 }
 
+// Shows one account with its role and the role switch.
+// TR: Bir hesabı rolü ve rol seçicisiyle gösterir.
 function UserRow({ user, canEditRoles }: { user: AdminUser; canEditRoles: boolean }) {
     const { t, language } = useLanguage();
     const me = useCurrentUser();
@@ -193,6 +194,8 @@ function UserRow({ user, canEditRoles }: { user: AdminUser; canEditRoles: boolea
     const isMe = user.id === me.id;
     const editable = canEditRoles && !isMe && user.role !== 'super_admin';
 
+    // Changes the user's role and updates the list.
+    // TR: Kullanıcının rolünü değiştirir ve listeyi günceller.
     async function changeRole(role: 'user' | 'admin') {
         setBusy(true);
         try {
@@ -210,7 +213,6 @@ function UserRow({ user, canEditRoles }: { user: AdminUser; canEditRoles: boolea
 
     return (
         <tr className="transition-colors hover:bg-sunken/50">
-            {/* max-w-0 + w-full lets this column take the free space and cut long names with "..." */}
             <td className="w-full max-w-0 px-4 py-3">
                 <div className="flex items-center gap-3">
                     <Avatar name={user.name} size="md" />

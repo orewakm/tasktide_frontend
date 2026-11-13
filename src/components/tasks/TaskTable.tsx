@@ -8,10 +8,8 @@ import { useLanguage } from '@/i18n/useLanguage';
 import type { CardListItem } from '@/interfaces';
 import { formatDate } from '@/lib/format';
 
-// One row per card. The title links to the card on its board; the link covers the whole row.
-// Smaller screens hide the priority, assignee and date columns and show the first two under the title.
-// TR: Her kart için bir satır. Başlık, kartın panosundaki haline gider; bağlantı tüm satırı kaplar.
-// TR: Küçük ekranlar öncelik, atanan ve tarih kolonlarını gizler; ilk ikisini başlığın altında gösterir.
+// Shows the tasks as a table, each row linking to its card.
+// TR: Görevleri, her satırı kartına bağlanan bir tablo olarak gösterir.
 export function TaskTable({ cards }: { cards: CardListItem[] }) {
     const { t, language } = useLanguage();
 

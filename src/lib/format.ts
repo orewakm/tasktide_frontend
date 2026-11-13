@@ -3,14 +3,16 @@ import type { Language } from '@/i18n/useLanguage';
 
 const LOCALES: Record<Language, string> = { en: 'en-US', tr: 'tr-TR' };
 
-// "Nov 10, 2026" / "10 Kas 2026"
+// Formats a date like "Nov 10, 2026" in the chosen language.
+// TR: Bir tarihi seçilen dilde "10 Kas 2026" gibi biçimlendirir.
 export function formatDate(iso: string, language: Language): string {
     return new Intl.DateTimeFormat(LOCALES[language], { day: 'numeric', month: 'short', year: 'numeric' }).format(
         new Date(iso),
     );
 }
 
-// "Nov 10, 9:04 PM" / "10 Kas 21:04"
+// Formats a date and time like "Nov 10, 9:04 PM" in the chosen language.
+// TR: Bir tarih ve saati seçilen dilde "10 Kas 21:04" gibi biçimlendirir.
 export function formatDateTime(iso: string, language: Language): string {
     return new Intl.DateTimeFormat(LOCALES[language], {
         day: 'numeric',
@@ -20,15 +22,16 @@ export function formatDateTime(iso: string, language: Language): string {
     }).format(new Date(iso));
 }
 
-// Stats days are "YYYY-MM-DD" in UTC, so they are formatted in UTC too.
-// TR: İstatistik günleri UTC'de "YYYY-MM-DD" biçimindedir, bu yüzden UTC'de biçimlendirilir.
+// Formats a stats day like "Nov 10", in UTC.
+// TR: Bir istatistik gününü UTC'de "10 Kas" gibi biçimlendirir.
 export function formatDay(day: string, language: Language): string {
     return new Intl.DateTimeFormat(LOCALES[language], { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(
         new Date(`${day}T00:00:00Z`),
     );
 }
 
-// "2h 5m", "12m", "40s"
+// Formats seconds as a duration like "2h 5m".
+// TR: Saniyeleri "2 sa 5 dk" gibi bir süre olarak biçimlendirir.
 export function formatDuration(totalSeconds: number, t: Dictionary): string {
     const seconds = Math.max(0, Math.round(totalSeconds));
     const h = Math.floor(seconds / 3600);
@@ -38,8 +41,8 @@ export function formatDuration(totalSeconds: number, t: Dictionary): string {
     return t.time.seconds(seconds);
 }
 
-// A ticking clock: "4:07" or "1:02:09".
-// TR: İşleyen bir saat: "4:07" veya "1:02:09".
+// Formats seconds as a clock like "1:02:09".
+// TR: Saniyeleri "1:02:09" gibi bir saat olarak biçimlendirir.
 export function formatClock(totalSeconds: number): string {
     const seconds = Math.max(0, Math.floor(totalSeconds));
     const h = Math.floor(seconds / 3600);
@@ -49,6 +52,8 @@ export function formatClock(totalSeconds: number): string {
     return `${h > 0 ? `${h}:` : ''}${mm}:${String(s).padStart(2, '0')}`;
 }
 
+// Returns the initials of a name.
+// TR: Bir ismin baş harflerini döndürür.
 export function initials(name: string): string {
     const parts = name.trim().split(/\s+/);
     const letters = parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : parts[0].slice(0, 2);

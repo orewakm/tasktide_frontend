@@ -8,16 +8,10 @@ import { useLanguage } from '@/i18n/useLanguage';
 import type { Priority } from '@/interfaces';
 import { formatClock } from '@/lib/format';
 
-// The preview timer starts at 1:24:05 and counts up like a real one.
-// TR: Önizleme zamanlayıcısı 1:24:05'ten başlar ve gerçeği gibi ileri sayar.
 const TIMER_START = 5045;
 
-// A small, made-up board that looks like the real one. It's only a picture, so screen
-// readers skip it (aria-hidden); the text next to it says the same thing.
-// Phones show two columns, bigger screens three.
-// TR: Gerçeğine benzeyen küçük, uydurma bir pano. Sadece bir resim olduğu için ekran
-// TR: okuyucular onu atlar (aria-hidden); yanındaki metin aynı şeyi söyler.
-// TR: Telefonlar iki sütun, büyük ekranlar üç sütun gösterir.
+// Shows a made-up board with a ticking timer on the landing page.
+// TR: Tanıtım sayfasında işleyen zamanlayıcılı örnek bir pano gösterir.
 export function BoardPreview() {
     const { t } = useLanguage();
     const p = t.landing.preview;
@@ -74,6 +68,8 @@ interface PreviewColumnProps {
     children: ReactNode;
 }
 
+// Shows one column of the preview board.
+// TR: Önizleme panosunun bir sütununu gösterir.
 function PreviewColumn({ title, count, hideOnPhone = false, children }: PreviewColumnProps) {
     return (
         <div
@@ -95,12 +91,11 @@ interface PreviewCardProps {
     priority: Priority;
     person?: string;
     done?: boolean;
-    // The running clock, e.g. "1:24:05". Only the card with a timer has one.
-    // TR: İşleyen saat, ör. "1:24:05". Sadece zamanlayıcısı olan kartta bulunur.
     timer?: string;
 }
-// Looks like the real CardTile, without the dragging and clicking.
-// TR: Gerçek CardTile gibi görünür, sürükleme ve tıklama olmadan.
+
+// Shows one card of the preview board.
+// TR: Önizleme panosunun bir kartını gösterir.
 function PreviewCard({ title, priority, person, done = false, timer }: PreviewCardProps) {
     return (
         <div

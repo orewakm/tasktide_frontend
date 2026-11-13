@@ -1,7 +1,5 @@
-# One domain for everything: the API and Socket.IO go to the backend, every other path
-# goes to the Next.js app. Caddy gets the HTTPS certificate automatically.
-# TR: Her şey için tek alan adı: API ve Socket.IO backend'e, diğer tüm yollar Next.js
-# TR: uygulamasına gider. Caddy HTTPS sertifikasını otomatik alır.
+# Sends /api and /socket.io to the backend and everything else to the app, with automatic HTTPS.
+# TR: /api ve /socket.io isteklerini backend'e, geri kalanını uygulamaya gönderir; HTTPS otomatiktir.
 {$DOMAIN} {
 	encode zstd gzip
 

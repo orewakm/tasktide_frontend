@@ -18,6 +18,8 @@ import { RankedList } from './RankedList';
 import { StatsSkeleton } from './StatsSkeleton';
 import { StatsEmpty, StatsHero, TopItem } from './StatsSummary';
 
+// Shows a board's card summary and time stats for the chosen range.
+// TR: Bir panonun kart özetini ve seçilen aralığın süre istatistiklerini gösterir.
 export function BoardStatsScreen({ boardId }: { boardId: string }) {
     const { t } = useLanguage();
     const [days, setDays] = useState(30);
@@ -26,8 +28,6 @@ export function BoardStatsScreen({ boardId }: { boardId: string }) {
     const stats = useQuery({
         queryKey: queryKeys.boardStats(boardId, days),
         queryFn: () => api.stats.board(boardId, days),
-        // When the range changes, keep showing the old numbers (faded) until the new ones arrive.
-        // TR: Aralık değişince yenileri gelene kadar eski sayıları (soluk) göstermeye devam et.
         placeholderData: keepPreviousData,
     });
 
@@ -86,6 +86,8 @@ export function BoardStatsScreen({ boardId }: { boardId: string }) {
     );
 }
 
+// Shows the board's total time, daily chart and lists per person and card.
+// TR: Panonun toplam süresini, günlük grafiğini ve kişi ile kart listelerini gösterir.
 function BoardStatsBody({ stats }: { stats: BoardStats }) {
     const { t } = useLanguage();
     const top = [...stats.by_user].sort((a, b) => b.seconds - a.seconds)[0];

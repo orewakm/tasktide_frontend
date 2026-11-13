@@ -7,8 +7,8 @@ import { Logo } from '@/components/Logo';
 import { buttonClass } from '@/components/ui/Button';
 import { useLanguage } from '@/i18n/useLanguage';
 
-// Top bar of the landing page. Logged-in people get a shortcut to their boards.
-// TR: Landing sayfasının üst çubuğu. Giriş yapmış kişiler panolarına kısayol görür.
+// Shows the landing page top bar with login or board links.
+// TR: Tanıtım sayfasının üst çubuğunu giriş ya da pano bağlantılarıyla gösterir.
 export function LandingNav() {
     const { t } = useLanguage();
     const { user, loading } = useAuth();
@@ -20,7 +20,6 @@ export function LandingNav() {
                     <Logo />
                 </Link>
                 <LanguageSwitch />
-                {/* Wait for the login check, so the buttons don't flash and swap. */}
                 {!loading &&
                     (user ? (
                         <Link href="/boards" className={buttonClass('primary')}>

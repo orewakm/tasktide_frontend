@@ -43,9 +43,10 @@ interface BoardCanvasProps {
 }
 
 type Dragging = { type: 'card' | 'column'; id: string };
-// Where the dragged item started, to put it back if the move fails.
 type Origin = { columnId: string; position: number; index: number };
 
+// Shows the columns and cards and handles drag and drop.
+// TR: Sütunları ve kartları gösterir ve sürükle bırakı yönetir.
 export function BoardCanvas({
     boardId,
     columns,
@@ -63,11 +64,8 @@ export function BoardCanvas({
     const origin = useRef<Origin | null>(null);
 
     const sensors = useSensors(
-        // Mouse: a small move starts a drag, so a plain click still opens the card.
         useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
-        // Touch: press and hold, so the page can still be scrolled with a swipe.
         useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 6 } }),
-        // Keyboard: Space picks up and drops, arrows move, Escape cancels.
         useSensor(KeyboardSensor, {
             coordinateGetter: sortableKeyboardCoordinates,
             keyboardCodes: { start: ['Space'], cancel: ['Escape'], end: ['Space', 'Enter'] },
@@ -78,16 +76,22 @@ export function BoardCanvas({
     const cardsByColumn = new Map<string, Card[]>(sortedColumns.map((column) => [column.id, []]));
     for (const card of [...cards].sort(byPosition)) cardsByColumn.get(card.column_id)?.push(card);
 
+    // Returns the board's cards from the cache.
+    // TR: Panonun kartlarını önbellekten döndürür.
     const getCards = () => queryClient.getQueryData<Card[]>(queryKeys.cards(boardId)) ?? [];
+
+    // Updates the board's cards in the cache.
+    // TR: Panonun kartlarını önbellekte günceller.
     const setCards = (update: (list: Card[]) => Card[]) =>
         queryClient.setQueryData<Card[]>(queryKeys.cards(boardId), (list) => (list ? update(list) : list));
+
+    // Updates the board's columns in the cache.
+    // TR: Panonun sütunlarını önbellekte günceller.
     const setColumns = (update: (list: Column[]) => Column[]) =>
         queryClient.setQueryData<Column[]>(queryKeys.columns(boardId), (list) => (list ? update(list) : list));
 
-    // Columns only collide with columns. Cards prefer the card under the pointer,
-    // then the column under it, then whatever is closest.
-    // TR: Sütunlar sadece sütunlarla çarpışır. Kartlar önce imlecin altındaki kartı,
-    // TR: sonra altındaki sütunu, sonra en yakını tercih eder.
+    // Picks the column or card under the pointer while dragging.
+    // TR: Sürüklerken imlecin altındaki sütunu ya da kartı seçer.
     const collisionDetection: CollisionDetection = (args) => {
         if (args.active.data.current?.type === 'column') {
             return closestCenter({
@@ -103,6 +107,8 @@ export function BoardCanvas({
         return closestCorners(args);
     };
 
+    // Remembers what is being dragged and where it started.
+    // TR: Neyin sürüklendiğini ve nereden başladığını hatırlar.
     function handleDragStart({ active }: DragStartEvent) {
         const id = String(active.id);
         const type = active.data.current?.type as Dragging['type'];
@@ -120,10 +126,8 @@ export function BoardCanvas({
         }
     }
 
-    // While dragging a card over another column, move it there right away so the
-    // target column opens a gap for it.
-    // TR: Bir kart başka bir sütunun üzerinde sürüklenirken onu hemen oraya taşı,
-    // TR: böylece hedef sütun ona yer açar.
+    // Moves a dragged card into the column under the pointer.
+    // TR: Sürüklenen kartı imlecin altındaki sütuna taşır.
     function handleDragOver({ active, over }: DragOverEvent) {
         if (!over || active.data.current?.type !== 'card') return;
         const activeId = String(active.id);
@@ -152,12 +156,16 @@ export function BoardCanvas({
         setCards((list) => list.map((c) => (c.id === activeId ? { ...c, column_id: targetColumnId, position } : c)));
     }
 
+    // Puts a card back where it was before the drag.
+    // TR: Bir kartı sürüklemeden önceki yerine geri koyar.
     function putCardBack(cardId: string, from: Origin) {
         setCards((list) =>
             list.map((c) => (c.id === cardId ? { ...c, column_id: from.columnId, position: from.position } : c)),
         );
     }
 
+    // Saves a card's new place, or puts it back if the server refuses.
+    // TR: Kartın yeni yerini kaydeder, sunucu reddederse geri koyar.
     function finishCardDrag(cardId: string, overId: string | null, overType: unknown, from: Origin) {
         const card = getCards().find((c) => c.id === cardId);
         if (!card) return;
@@ -172,16 +180,11 @@ export function BoardCanvas({
             if (overIndex !== -1) toIndex = overIndex;
         }
 
-        // Dropped where it started: undo any preview and skip the request.
         if (card.column_id === from.columnId && toIndex === from.index) {
             putCardBack(cardId, from);
             return;
         }
 
-        // `index` is the slot in the target list counted without the card itself,
-        // which is exactly its index after the move.
-        // TR: `index`, kartın kendisi sayılmadan hedef listedeki yeridir;
-        // TR: bu da taşımadan sonraki index'inin ta kendisidir.
         const others = list.filter((c) => c.id !== cardId);
         const position = positionAt(
             others.map((c) => c.position),
@@ -198,6 +201,8 @@ export function BoardCanvas({
             });
     }
 
+    // Saves a column's new place, or puts it back if the server refuses.
+    // TR: Sütunun yeni yerini kaydeder, sunucu reddederse geri koyar.
     function finishColumnDrag(columnId: string, overId: string | null, from: Origin) {
         if (!overId || overId === columnId) return;
         const toIndex = sortedColumns.findIndex((c) => c.id === overId);
@@ -219,6 +224,8 @@ export function BoardCanvas({
             });
     }
 
+    // Finishes a card or column drag.
+    // TR: Bir kart ya da sütun sürüklemesini bitirir.
     function handleDragEnd({ active, over }: DragEndEvent) {
         const from = origin.current;
         origin.current = null;
@@ -231,6 +238,8 @@ export function BoardCanvas({
         else finishCardDrag(id, overId, over?.data.current?.type, from);
     }
 
+    // Puts the dragged item back when the drag is cancelled.
+    // TR: Sürükleme iptal edilince öğeyi geri koyar.
     function handleDragCancel() {
         const from = origin.current;
         origin.current = null;
@@ -238,11 +247,15 @@ export function BoardCanvas({
         setDragging(null);
     }
 
+    // Creates a card at the bottom of a column.
+    // TR: Bir sütunun en altına kart oluşturur.
     async function addCard(columnId: string, title: string) {
         const card = await api.cards.create(columnId, { title });
         setCards((list) => upsert(list, card) ?? list);
     }
 
+    // Creates a column at the end of the board.
+    // TR: Panonun sonuna bir sütun oluşturur.
     async function addColumn(name: string) {
         const column = await api.columns.create(boardId, name);
         setColumns((list) => upsert(list, column) ?? list);

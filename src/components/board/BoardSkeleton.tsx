@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/Skeleton';
 
-// Shown while the board loads. Same shape as the real board, so nothing jumps.
-// TR: Pano yüklenirken gösterilir. Gerçek panoyla aynı şekilde, böylece hiçbir şey zıplamaz.
+// Shows a placeholder board while the board loads.
+// TR: Pano yüklenirken yer tutucu bir pano gösterir.
 export function BoardSkeleton() {
     return (
         <div className="flex h-[calc(100dvh-57px)] flex-col" aria-busy="true">

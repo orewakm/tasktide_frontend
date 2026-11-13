@@ -1,3 +1,5 @@
+# Keeps local files out of the image; .env* so a local API URL is never built in.
+# TR: Yerel dosyaları imajın dışında tutar; .env* sayesinde yerel API adresi imaja girmez.
 node_modules
 .next
 .git
@@ -10,5 +12,4 @@ Dockerfile
 .dockerignore
 deploy
 docs
-# Never bake local env files (like NEXT_PUBLIC_API_URL=http://localhost:8000) into the image.
 .env*

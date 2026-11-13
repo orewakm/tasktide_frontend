@@ -19,7 +19,6 @@ interface BoardHeaderProps {
     board: Board;
     memberCount: number;
     online: OnlineUser[];
-    // Other people's running timers on this board.
     workingOn: TimeEntryDetails[];
     canManage: boolean;
     canLeave: boolean;
@@ -30,6 +29,8 @@ interface BoardHeaderProps {
     onOpenCard: (cardId: string) => void;
 }
 
+// Shows the board name, who is online and the board actions.
+// TR: Pano adını, çevrimiçi kişileri ve pano işlemlerini gösterir.
 export function BoardHeader({
     board,
     memberCount,
@@ -111,8 +112,8 @@ export function BoardHeader({
     );
 }
 
-// Overlapping avatars of everyone who has the board open.
-// TR: Panoyu açık tutan herkesin üst üste binen avatarları.
+// Shows the avatars of everyone who has the board open.
+// TR: Panoyu açık tutan herkesin avatarlarını gösterir.
 function OnlineStack({ online }: { online: OnlineUser[] }) {
     const { t } = useLanguage();
     if (online.length === 0) return null;

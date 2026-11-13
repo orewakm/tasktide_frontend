@@ -6,8 +6,8 @@ import { useAuth } from '@/components/AuthProvider';
 import { buttonClass } from '@/components/ui/Button';
 import { useLanguage } from '@/i18n/useLanguage';
 
-// One last push before the footer: a sentence and a button.
-// TR: Footer'dan önceki son çağrı: bir cümle ve bir buton.
+// Shows the last call to sign up before the footer.
+// TR: Alt bilgiden önce son kayıt çağrısını gösterir.
 export function ClosingCta() {
     const { t } = useLanguage();
     const { user } = useAuth();

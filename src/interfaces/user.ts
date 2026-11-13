@@ -7,8 +7,6 @@ export interface User {
     role: Role;
 }
 
-// The admin user list also includes when each account was created.
-// TR: Admin kullanıcı listesi, her hesabın ne zaman oluşturulduğunu da içerir.
 export interface AdminUser extends User {
     created_at: string;
 }

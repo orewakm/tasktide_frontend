@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 
-// The current time, updated every second while `active` is true. Used for ticking timers,
-// computed in the browser instead of asking the API every second.
-// TR: Şu anki zaman, `active` true olduğu sürece her saniye güncellenir. İşleyen zamanlayıcılar
-// TR: için kullanılır; API'ye her saniye sormak yerine tarayıcıda hesaplanır.
+// Returns the current time, updated every second while active.
+// TR: Etkinken her saniye güncellenen şu anki zamanı döndürür.
 export function useNow(active: boolean): number {
     const [now, setNow] = useState(() => Date.now());
 

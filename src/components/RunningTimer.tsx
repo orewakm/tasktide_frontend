@@ -7,8 +7,8 @@ import { formatClock } from '@/lib/format';
 import { elapsedSeconds, useMyTimer, useTimerActions } from '@/lib/timer';
 import { useNow } from '@/lib/useNow';
 
-// The header pill for my running timer: card title, ticking clock and a stop button.
-// TR: Çalışan zamanlayıcım için header'daki hap: kart başlığı, işleyen saat ve durdur butonu.
+// Shows my running timer in the header with a stop button.
+// TR: Çalışan zamanlayıcımı üst çubukta durdur butonuyla gösterir.
 export function RunningTimer() {
     const { t } = useLanguage();
     const timer = useMyTimer();

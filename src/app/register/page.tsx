@@ -11,6 +11,8 @@ import { useLanguage } from '@/i18n/useLanguage';
 import { api, ApiError } from '@/lib/api';
 import { errorText } from '@/lib/errors';
 
+// Shows the sign-up form.
+// TR: Kayıt formunu gösterir.
 export default function RegisterPage() {
     const router = useRouter();
     const { login } = useAuth();
@@ -23,6 +25,8 @@ export default function RegisterPage() {
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState(false);
 
+    // Creates the account, logs in and opens the boards page.
+    // TR: Hesabı oluşturur, giriş yapar ve panolar sayfasını açar.
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null);
@@ -31,7 +35,6 @@ export default function RegisterPage() {
 
         try {
             await api.auth.register({ name, email, password });
-            // Registering doesn't log you in, so log in right away with the same details.
             const { token, user } = await api.auth.login({ email, password });
             login(token, user);
             router.push('/boards');

@@ -2,10 +2,10 @@ import type { ApiErrorBody, FieldError } from '@/interfaces';
 import { API_URL } from '@/lib/config';
 import { clearToken, getToken } from '@/lib/token';
 
-// Status used when the request never reached the server (offline, API down).
-// TR: İstek sunucuya hiç ulaşamadığında kullanılan durum kodu (çevrimdışı, API kapalı).
 export const NETWORK_ERROR = 0;
 
+// Holds the status, message and field errors of a failed request.
+// TR: Başarısız bir isteğin durumunu, mesajını ve alan hatalarını tutar.
 export class ApiError extends Error {
     readonly status: number;
     readonly details: FieldError[];
@@ -17,25 +17,25 @@ export class ApiError extends Error {
         this.details = details;
     }
 
-    // Validation messages keyed by field name, ready to show next to form inputs.
-    // TR: Alan adına göre doğrulama mesajları, form alanlarının yanında göstermeye hazır.
+    // Returns the validation messages by field name.
+    // TR: Doğrulama mesajlarını alan adına göre döndürür.
     get fieldErrors(): Record<string, string> {
         return Object.fromEntries(this.details.map((d) => [d.field, d.message]));
     }
 }
 
-// Any 401 means the session is gone. The auth provider listens here to log the user out.
-// TR: Her 401, oturumun bittiği anlamına gelir. Auth provider kullanıcıyı çıkarmak için burayı dinler.
 type Listener = () => void;
 const unauthorizedListeners = new Set<Listener>();
 
+// Registers a listener that runs when the session ends.
+// TR: Oturum bitince çalışan bir dinleyici kaydeder.
 export function onUnauthorized(listener: Listener): () => void {
     unauthorizedListeners.add(listener);
     return () => unauthorizedListeners.delete(listener);
 }
 
-// For the socket: the server rejected its session, which means the same as a 401.
-// TR: Socket için: sunucu oturumunu reddetti, bu da bir 401 ile aynı anlama gelir.
+// Clears the token and tells the listeners the session ended.
+// TR: Token'ı siler ve dinleyicilere oturumun bittiğini bildirir.
 export function reportUnauthorized() {
     clearToken();
     unauthorizedListeners.forEach((listener) => listener());
@@ -46,11 +46,11 @@ type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 interface RequestOptions {
     body?: unknown;
     query?: Record<string, string | number | undefined>;
-    // false for register and login, which don't send a token.
-    // TR: Token göndermeyen register ve login için false.
     auth?: boolean;
 }
 
+// Builds the full API URL with the query parameters.
+// TR: Sorgu parametreleriyle tam API URL'sini oluşturur.
 function buildUrl(path: string, query?: RequestOptions['query']): string {
     const params = new URLSearchParams();
     for (const [key, value] of Object.entries(query ?? {})) {
@@ -60,6 +60,8 @@ function buildUrl(path: string, query?: RequestOptions['query']): string {
     return `${API_URL}/api${path}${qs ? `?${qs}` : ''}`;
 }
 
+// Sends a request to the API and returns the answer or throws an ApiError.
+// TR: API'ye istek gönderir, cevabı döndürür ya da ApiError fırlatır.
 export async function request<T>(method: Method, path: string, options: RequestOptions = {}): Promise<T> {
     const { body, query, auth = true } = options;
 
@@ -84,8 +86,6 @@ export async function request<T>(method: Method, path: string, options: RequestO
     const data: unknown = await res.json().catch(() => null);
 
     if (!res.ok) {
-        // Only clear the token this request used: another tab may have logged in again meanwhile.
-        // TR: Sadece bu isteğin kullandığı token temizlenir: bu arada başka bir sekme yeniden giriş yapmış olabilir.
         if (res.status === 401 && auth) {
             if (token && getToken() === token) clearToken();
             unauthorizedListeners.forEach((listener) => listener());

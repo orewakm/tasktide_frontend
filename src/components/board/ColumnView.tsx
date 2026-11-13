@@ -22,6 +22,8 @@ interface ColumnViewProps {
     onDelete: () => void;
 }
 
+// Shows a column with its cards and the add card button.
+// TR: Bir sütunu kartları ve kart ekleme butonuyla gösterir.
 export function ColumnView({
     column,
     cards,
@@ -109,6 +111,8 @@ interface ColumnHeaderProps {
     handle?: ReactNode;
 }
 
+// Shows the column name, card count and column menu.
+// TR: Sütun adını, kart sayısını ve sütun menüsünü gösterir.
 export function ColumnHeader({ column, count, canDelete, onRename, onDelete, handle }: ColumnHeaderProps) {
     const { t } = useLanguage();
 

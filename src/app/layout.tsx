@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     description: 'Boards, cards and time tracking for teams',
 };
 
+// Sets up the HTML page, fonts and providers for every page.
+// TR: Her sayfa için HTML sayfasını, fontları ve sağlayıcıları hazırlar.
 export default function RootLayout({ children }: LayoutProps<'/'>) {
     return (
         <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>

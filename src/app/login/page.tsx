@@ -11,6 +11,8 @@ import { useLanguage } from '@/i18n/useLanguage';
 import { api } from '@/lib/api';
 import { errorText } from '@/lib/errors';
 
+// Shows the login form.
+// TR: Giriş formunu gösterir.
 export default function LoginPage() {
     const router = useRouter();
     const { login } = useAuth();
@@ -21,6 +23,8 @@ export default function LoginPage() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
+    // Logs in with the form values and opens the boards page.
+    // TR: Form bilgileriyle giriş yapar ve panolar sayfasını açar.
     async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault();
         setError(null);

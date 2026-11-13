@@ -12,15 +12,21 @@ import { errorText } from '@/lib/errors';
 import { removeWhere, upsert } from '@/lib/lists';
 import { queryKeys } from '@/lib/queryKeys';
 
+// Shows my pending invitations with accept and decline buttons.
+// TR: Bekleyen davetlerimi kabul ve ret butonlarıyla gösterir.
 export function InvitationList({ invitations }: { invitations: Board[] }) {
     const { t } = useLanguage();
     const queryClient = useQueryClient();
     const [busyId, setBusyId] = useState<string | null>(null);
 
+    // Removes an invitation from the list.
+    // TR: Bir daveti listeden kaldırır.
     function dropInvitation(boardId: string) {
         queryClient.setQueryData<Board[]>(queryKeys.invitations, (list) => removeWhere(list, (b) => b.id === boardId));
     }
 
+    // Accepts an invitation and adds the board to my list.
+    // TR: Bir daveti kabul eder ve panoyu listeme ekler.
     async function accept(board: Board) {
         setBusyId(board.id);
         try {
@@ -35,6 +41,8 @@ export function InvitationList({ invitations }: { invitations: Board[] }) {
         }
     }
 
+    // Declines an invitation.
+    // TR: Bir daveti reddeder.
     async function decline(board: Board) {
         setBusyId(board.id);
         try {

@@ -1,17 +1,15 @@
-# Stage 1: install everything and build the standalone Next.js server
+# Builds the standalone Next.js server; an empty NEXT_PUBLIC_API_URL calls the API on the same domain.
+# TR: Bağımsız Next.js sunucusunu derler; boş NEXT_PUBLIC_API_URL, API'yi aynı alan adında çağırır.
 FROM node:24-alpine AS build
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-# Empty means "same origin": on the VDS, Caddy serves the app and the API on one domain.
-# For a separate API, build with --build-arg NEXT_PUBLIC_API_URL=https://api.example.com
 ARG NEXT_PUBLIC_API_URL=""
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
-# Stage 2: small image with only the standalone server and the static files
 FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production \

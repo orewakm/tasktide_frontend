@@ -22,12 +22,14 @@ const SIZES: Record<Size, string> = {
     lg: 'h-12 gap-2 px-5 text-[15px]',
 };
 
-// Also used to make a <Link> look like a button.
-// TR: Bir <Link>'i buton gibi göstermek için de kullanılır.
+// Returns the classes of a button, also used to style links.
+// TR: Bir butonun sınıflarını döndürür; bağlantılara stil vermek için de kullanılır.
 export function buttonClass(variant: Variant = 'primary', size: Size = 'md'): string {
     return `inline-flex shrink-0 items-center justify-center rounded-lg font-medium whitespace-nowrap transition-[background-color,border-color,color,transform] duration-150 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 ${VARIANTS[variant]} ${SIZES[size]}`;
 }
 
+// Shows a button in one of the app's styles.
+// TR: Uygulamanın stillerinden biriyle bir buton gösterir.
 export function Button({
     variant = 'primary',
     size = 'md',

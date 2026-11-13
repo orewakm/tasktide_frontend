@@ -18,6 +18,8 @@ import { formatDateTime } from '@/lib/format';
 import { removeWhere, upsert } from '@/lib/lists';
 import { queryKeys } from '@/lib/queryKeys';
 
+// Shows the card's notes and the form to add one.
+// TR: Kartın notlarını ve not ekleme formunu gösterir.
 export function CardNotes({ card, isOwner }: { card: Card; isOwner: boolean }) {
     const { t } = useLanguage();
     const me = useCurrentUser();
@@ -26,12 +28,15 @@ export function CardNotes({ card, isOwner }: { card: Card; isOwner: boolean }) {
     const [text, setText] = useState('');
     const [busy, setBusy] = useState(false);
 
-    // Only the card's assignee can write notes (the API checks this too).
     const canAdd = card.assignee_id === me.id;
 
+    // Updates the card's notes in the cache.
+    // TR: Kartın notlarını önbellekte günceller.
     const setNotes = (update: (list: Note[] | undefined) => Note[] | undefined) =>
         queryClient.setQueryData<Note[]>(queryKeys.notes(card.id), update);
 
+    // Adds a note to the card.
+    // TR: Karta bir not ekler.
     async function addNote(event?: SubmitEvent<HTMLFormElement>) {
         event?.preventDefault();
         const content = text.trim();
@@ -113,11 +118,15 @@ interface NoteItemProps {
     onDeleted: () => void;
 }
 
+// Shows one note with edit and delete when allowed.
+// TR: Bir notu, izin varsa düzenleme ve silmeyle gösterir.
 function NoteItem({ note, canEdit, canDelete, onSaved, onDeleted }: NoteItemProps) {
     const { t, language } = useLanguage();
     const [draft, setDraft] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
 
+    // Saves the edited note.
+    // TR: Düzenlenen notu kaydeder.
     async function save() {
         const content = draft?.trim();
         if (!content) return;
@@ -132,6 +141,8 @@ function NoteItem({ note, canEdit, canDelete, onSaved, onDeleted }: NoteItemProp
         }
     }
 
+    // Deletes the note.
+    // TR: Notu siler.
     async function remove() {
         setBusy(true);
         try {
