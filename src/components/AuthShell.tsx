@@ -35,6 +35,12 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
                         <p className="mt-1.5 text-sm text-muted">{subtitle}</p>
                         <div className="mt-8">{children}</div>
                         <p className="mt-6 text-sm text-muted">{footer}</p>
+                        <p className="mt-2 text-sm text-muted">
+                            {t.auth.demoPrompt}{' '}
+                            <Link href="/demo" className="font-medium text-accent-ink hover:underline">
+                                {t.auth.demoLink}
+                            </Link>
+                        </p>
                     </div>
                 </div>
             </main>

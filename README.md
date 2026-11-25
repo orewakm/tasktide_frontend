@@ -2,6 +2,8 @@
 
 Live: https://tasktide.live
 
+Try it without an account: https://tasktide.live/demo opens a sample board with a guest account. The browser remembers that guest, so your changes are still there when you come back.
+
 ## Stack
 
 Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, TanStack Query, Socket.IO client, dnd-kit, Recharts, Docker.

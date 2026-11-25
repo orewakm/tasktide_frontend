@@ -49,16 +49,17 @@ export function Hero() {
                             </Link>
                         ) : (
                             <>
-                                <Link href="/register" className={buttonClass('primary', 'lg')}>
-                                    {t.landing.hero.start}
+                                <Link href="/demo" className={buttonClass('primary', 'lg')}>
+                                    {t.landing.hero.demo}
                                     <ArrowRightIcon size={16} weight="bold" />
                                 </Link>
-                                <Link href="/login" className={buttonClass('secondary', 'lg')}>
-                                    {t.landing.nav.login}
+                                <Link href="/register" className={buttonClass('secondary', 'lg')}>
+                                    {t.landing.hero.start}
                                 </Link>
                             </>
                         )}
                     </div>
+                    {!user && <p className="mt-3 text-sm text-muted">{t.landing.hero.demoNote}</p>}
                 </div>
 
                 <div className="motion-safe:animate-enter motion-safe:[animation-delay:150ms]">

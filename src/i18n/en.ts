@@ -44,6 +44,8 @@ export const en = {
             'See who is online and what they work on',
             'Know where the hours went',
         ],
+        demoPrompt: 'Just looking?',
+        demoLink: 'Try the demo without an account',
     },
     header: {
         language: 'Language',
@@ -274,6 +276,24 @@ export const en = {
         body: "The page you're looking for doesn't exist.",
         home: 'Go to boards',
     },
+    demo: {
+        preparing: 'Opening your demo...',
+        failed: "Couldn't start the demo. Please try again.",
+        retry: 'Try again',
+        home: 'Back to home',
+        guestName: 'Guest',
+        board: 'Website launch',
+        columns: ['To do', 'In progress', 'Done'],
+        cards: {
+            faq: { title: 'Write the pricing page FAQ', description: 'Answer the five questions sales hears most.' },
+            analytics: { title: 'Set up analytics and the cookie banner', description: 'Count page views without tracking people.' },
+            launchDate: { title: 'Pick the launch date with sales', description: 'Check it against the newsletter schedule.' },
+            copy: { title: 'Write the landing page copy', description: 'Hero, three feature blocks and pricing. Keep each section under 60 words.' },
+            illustration: { title: 'Draw the hero illustration', description: 'A board with three columns, in the brand colors.' },
+            palette: { title: 'Choose the color palette', description: 'One accent color and two grays.' },
+            domain: { title: 'Buy the domain and set up DNS', description: 'Point it to the server and turn on HTTPS.' },
+        },
+    },
     landing: {
         nav: { login: 'Log in', start: 'Get started', openBoards: 'Open my boards' },
         hero: {
@@ -282,6 +302,8 @@ export const en = {
             titleAccent: 'Finish it.',
             body: 'Boards that update live for your whole team, and a timer on every card. At the end of the week you know what got done and where the hours went.',
             start: 'Create your account',
+            demo: 'Try the demo',
+            demoNote: 'No sign-up needed. You get a guest account with a sample board, and your changes are still there when you come back in this browser.',
         },
         preview: {
             board: 'Launch week',

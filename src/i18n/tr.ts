@@ -46,6 +46,8 @@ export const tr: Dictionary = {
             'Kimin çevrimiçi olduğunu ve ne üzerinde çalıştığını görün',
             'Saatlerin nereye gittiğini bilin',
         ],
+        demoPrompt: 'Sadece göz mü atıyorsunuz?',
+        demoLink: 'Demoyu hesapsız deneyin',
     },
     header: {
         language: 'Dil',
@@ -276,6 +278,24 @@ export const tr: Dictionary = {
         body: 'Aradığınız sayfa mevcut değil.',
         home: 'Panolara git',
     },
+    demo: {
+        preparing: 'Demonuz açılıyor...',
+        failed: 'Demo başlatılamadı. Lütfen tekrar deneyin.',
+        retry: 'Tekrar dene',
+        home: 'Ana sayfaya dön',
+        guestName: 'Misafir',
+        board: 'Web sitesi lansmanı',
+        columns: ['Yapılacak', 'Devam ediyor', 'Tamamlandı'],
+        cards: {
+            faq: { title: 'Fiyat sayfasının SSS bölümünü yaz', description: 'Satış ekibinin en sık duyduğu beş soruyu yanıtla.' },
+            analytics: { title: 'Analitik aracını ve çerez bildirimini kur', description: 'Kişileri takip etmeden sayfa görüntülemelerini say.' },
+            launchDate: { title: 'Lansman tarihini satış ekibiyle belirle', description: 'Bülten takvimiyle çakışmadığını kontrol et.' },
+            copy: { title: 'Ana sayfa metinlerini yaz', description: 'Giriş bölümü, üç özellik bloğu ve fiyatlar. Her bölüm 60 kelimeyi geçmesin.' },
+            illustration: { title: 'Ana sayfa görselini çiz', description: 'Marka renklerinde, üç sütunlu bir pano.' },
+            palette: { title: 'Renk paletini seç', description: 'Bir vurgu rengi ve iki gri ton.' },
+            domain: { title: 'Alan adını al ve DNS ayarlarını yap', description: 'Sunucuya yönlendir ve HTTPS bağlantısını aç.' },
+        },
+    },
     landing: {
         nav: { login: 'Giriş yap', start: 'Hemen başlayın', openBoards: 'Panolarıma git' },
         hero: {
@@ -284,6 +304,8 @@ export const tr: Dictionary = {
             titleAccent: 'Bitirin.',
             body: 'Tüm ekibiniz için canlı güncellenen panolar ve her kartta bir zamanlayıcı. Hafta sonunda neyin bittiğini ve saatlerin nereye gittiğini bilirsiniz.',
             start: 'Hesabınızı oluşturun',
+            demo: 'Demoyu deneyin',
+            demoNote: 'Kayıt gerekmez. Örnek panolu bir misafir hesabı açılır ve bu tarayıcıya geri döndüğünüzde değişiklikleriniz yerinde olur.',
         },
         preview: {
             board: 'Lansman haftası',
